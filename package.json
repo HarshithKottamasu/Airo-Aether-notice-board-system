@@ -1,26 +1,9 @@
 {
-  "name": "airo-aether-notice-board-system",
-  "version": "1.0.0",
-  "description": "Context-aware digital notice board",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AnujJandhyala12/Airo-Aether-notice-board-system.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/AnujJandhyala12/Airo-Aether-notice-board-system/issues"
-  },
-  "homepage": "https://github.com/AnujJandhyala12/Airo-Aether-notice-board-system#readme",
   "dependencies": {
-    "firebase-admin": "^13.8.0"
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "firebase-admin": "^13.7.0",
+    "pg": "^8.20.0"
   }
 }
