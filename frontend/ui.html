@@ -1,0 +1,446 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIRO-AETHER Notice Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-pink: #ff00aa;
+      --neon-green: #39ff14;
+      --neon-orange: #ff6b00;
+      --neon-purple: #bf00ff;
+      --bg-void: #020408;
+      --bg-dark: #050d15;
+      --bg-card: #080f1a;
+      --bg-card2: #0a1020;
+      --border-glow: rgba(0,245,255,0.2);
+      --text-primary: #e8f4f8;
+      --text-muted: #6a8a9a;
+    }
+
+    body {
+      background: var(--bg-void);
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 40% at 20% 0%, rgba(0,245,255,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,0,170,0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
+
+    header { padding: 24px 20px 0; position: relative; z-index: 1; }
+
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(0,245,255,0.15); padding-bottom: 16px;
+    }
+
+    .logo-title {
+      font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900;
+      letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--neon-cyan); letter-spacing: 3px; opacity: 0.6; margin-top: 4px; }
+
+    .live-badge { display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-green); letter-spacing: 2px; }
+
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon-green); animation: pulse-dot 1.4s ease-in-out infinite; }
+
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.7); } }
+
+    .header-time { font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text-muted); text-align: right; }
+
+    .event-tabs { display: flex; gap: 0; margin: 20px 0; border: 1px solid rgba(0,245,255,0.1); border-radius: 4px; overflow: hidden; width: fit-content; }
+
+    .event-tab { padding: 10px 28px; font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: var(--text-muted); }
+
+    .event-tab.airo.active { background: rgba(0,245,255,0.1); color: var(--neon-cyan); border-right: 1px solid rgba(0,245,255,0.2); }
+    .event-tab.aether.active { background: rgba(255,0,170,0.1); color: var(--neon-pink); }
+    .event-tab:not(.active):hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+
+    .board-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; margin-top: 8px; }
+
+    .panel { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 4px; overflow: hidden; position: relative; }
+    .panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); opacity: 0.5; }
+    .panel.pink::before { background: linear-gradient(90deg, transparent, var(--neon-pink), transparent); }
+    .panel.green::before { background: linear-gradient(90deg, transparent, var(--neon-green), transparent); }
+    .panel.orange::before { background: linear-gradient(90deg, transparent, var(--neon-orange), transparent); }
+
+    .panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid rgba(0,245,255,0.08); background: rgba(0,0,0,0.3); }
+    .panel-title { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--neon-cyan); }
+    .panel.pink .panel-title { color: var(--neon-pink); }
+    .panel.green .panel-title { color: var(--neon-green); }
+    .panel.orange .panel-title { color: var(--neon-orange); }
+
+    .panel-count { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-muted); background: rgba(0,245,255,0.05); padding: 2px 8px; border-radius: 2px; border: 1px solid rgba(0,245,255,0.1); }
+
+    .notices-list { padding: 8px; }
+
+    .notice-card { padding: 14px 16px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(0,245,255,0.07); background: var(--bg-card2); cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+    .notice-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--neon-cyan); opacity: 0.6; }
+    .notice-card.pink::before { background: var(--neon-pink); }
+    .notice-card.urgent::before { background: var(--neon-orange); animation: blink-bar 1s step-end infinite; }
+    @keyframes blink-bar { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.2; } }
+    .notice-card:hover { border-color: rgba(0,245,255,0.25); background: rgba(0,245,255,0.04); transform: translateX(2px); }
+    .notice-card.pink:hover { border-color: rgba(255,0,170,0.25); background: rgba(255,0,170,0.04); }
+
+    .notice-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .notice-type { font-family: 'Share Tech Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 2px; letter-spacing: 1px; border: 1px solid; }
+    .notice-type.airo { color: var(--neon-cyan); border-color: rgba(0,245,255,0.3); background: rgba(0,245,255,0.07); }
+    .notice-type.aether { color: var(--neon-pink); border-color: rgba(255,0,170,0.3); background: rgba(255,0,170,0.07); }
+    .notice-type.general { color: var(--neon-purple); border-color: rgba(191,0,255,0.3); background: rgba(191,0,255,0.07); }
+    .notice-time { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); margin-left: auto; }
+    .notice-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
+    .notice-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    .matches-list { padding: 8px; }
+    .match-card { padding: 12px 14px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(255,107,0,0.1); background: var(--bg-card2); }
+    .match-sport { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--neon-orange); letter-spacing: 2px; margin-bottom: 8px; }
+    .match-teams { display: flex; align-items: center; gap: 10px; }
+    .team-name { font-size: 14px; font-weight: 700; flex: 1; }
+    .team-name.left { text-align: left; color: var(--neon-cyan); }
+    .team-name.right { text-align: right; color: var(--neon-pink); }
+    .score-block { text-align: center; }
+    .score-text { font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 4px; }
+    .match-status { font-family: 'Share Tech Mono', monospace; font-size: 10px; display: block; margin-top: 2px; }
+    .match-status.live { color: var(--neon-green); animation: pulse-dot 1.4s ease-in-out infinite; }
+    .match-status.done { color: var(--text-muted); }
+    .match-status.upcoming { color: var(--neon-orange); }
+
+    .themes-list { padding: 8px; }
+    .theme-card { padding: 12px 14px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(57,255,20,0.08); background: var(--bg-card2); display: flex; align-items: center; gap: 16px; }
+    .theme-day { font-family: 'Orbitron', monospace; font-size: 10px; color: var(--neon-green); letter-spacing: 2px; min-width: 50px; }
+    .theme-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .theme-today { margin-left: auto; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--neon-green); background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.2); padding: 2px 8px; border-radius: 2px; }
+
+    .ticker-bar { background: rgba(0,245,255,0.05); border-top: 1px solid rgba(0,245,255,0.1); border-bottom: 1px solid rgba(0,245,255,0.1); padding: 8px 0; overflow: hidden; margin: 12px 0; }
+    .ticker-inner { display: flex; gap: 60px; animation: ticker 30s linear infinite; white-space: nowrap; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-item { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-cyan); letter-spacing: 1px; display: inline-flex; align-items: center; gap: 8px; }
+    .ticker-sep { color: var(--neon-pink); opacity: 0.5; }
+
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 4px; padding: 14px 16px; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); opacity: 0.4; }
+    .stat-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 6px; }
+    .stat-value { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; color: var(--neon-cyan); }
+    .stat-value.pink { color: var(--neon-pink); }
+    .stat-value.green { color: var(--neon-green); }
+    .stat-value.orange { color: var(--neon-orange); }
+
+    /* LOADING STATE */
+    .loading-row { display: flex; align-items: center; justify-content: center; padding: 32px; gap: 10px; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 2px; }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,245,255,0.1); border-top-color: var(--neon-cyan); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ERROR STATE */
+    .error-row { padding: 20px 16px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-orange); text-align: center; letter-spacing: 1px; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--bg-card); border: 1px solid rgba(0,245,255,0.25); border-radius: 6px; padding: 28px; max-width: 480px; width: 90%; position: relative; }
+    .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); }
+    .modal-close { position: absolute; top: 14px; right: 16px; font-family: 'Orbitron', monospace; font-size: 11px; color: var(--text-muted); cursor: pointer; letter-spacing: 1px; background: none; border: none; }
+    .modal-close:hover { color: var(--neon-cyan); }
+    .modal-tag { margin-bottom: 12px; }
+    .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
+    .modal-body { font-size: 14px; color: #8aabb8; line-height: 1.7; }
+    .modal-footer { margin-top: 16px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.2); border-radius: 2px; }
+
+    @media (max-width: 760px) {
+      .board-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(2,1fr); }
+      .logo-title { font-size: 20px; }
+    }
+  </style>
+  </head>
+  <body>
+  <div class="scanlines"></div>
+
+  <header>
+    <div class="header-inner">
+      <div>
+        <div class="logo-title">AIRO·AETHER</div>
+        <div class="logo-sub">CONTEXT-AWARE DIGITAL NOTICE BOARD</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:24px;">
+        <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+        <div class="header-time" id="clock">--:--:--</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="ticker-bar"><div class="ticker-inner" id="ticker">
+      <span class="ticker-item"><span class="ticker-sep">▶</span> LOADING LIVE DATA...</span>
+    </div></div>
+
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-label">NOTICES</div><div class="stat-value" id="stat-notices">—</div></div>
+      <div class="stat-card"><div class="stat-label">LIVE MATCHES</div><div class="stat-value green" id="stat-live">—</div></div>
+      <div class="stat-card"><div class="stat-label">EVENTS</div><div class="stat-value pink" id="stat-events">—</div></div>
+      <div class="stat-card"><div class="stat-label">TODAY'S THEME</div><div class="stat-value orange" id="stat-theme" style="font-size:13px;letter-spacing:1px;margin-top:4px">—</div></div>
+    </div>
+
+    <div class="event-tabs">
+      <button class="event-tab airo active" onclick="setTab('AIRO')">AIRO</button>
+      <button class="event-tab aether" onclick="setTab('AETHER')">AETHER</button>
+      <button class="event-tab" style="color:var(--text-muted)" onclick="setTab('ALL')">ALL</button>
+    </div>
+
+    <div class="board-grid">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">NOTICES</div>
+          <div class="panel-count" id="notice-count">LOADING</div>
+        </div>
+        <div class="notices-list" id="notices-list">
+          <div class="loading-row"><div class="spinner"></div>FETCHING NOTICES</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="panel orange">
+          <div class="panel-header">
+            <div class="panel-title">MATCH SCORES</div>
+            <div class="panel-count" style="border-color:rgba(255,107,0,0.2);color:var(--neon-orange)" id="match-count">LOADING</div>
+          </div>
+          <div class="matches-list" id="matches-list">
+            <div class="loading-row"><div class="spinner" style="border-top-color:var(--neon-orange)"></div>FETCHING SCORES</div>
+          </div>
+        </div>
+
+        <div class="panel green">
+          <div class="panel-header"><div class="panel-title">DAILY THEMES</div></div>
+          <div class="themes-list" id="themes-list">
+            <div class="loading-row"><div class="spinner" style="border-top-color:var(--neon-green)"></div>FETCHING THEMES</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">[ CLOSE ]</button>
+      <div class="modal-tag" id="modal-tag"></div>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <script>
+  // ── CONFIG ─────────────────────────────────────────────────────
+  const API = "http://localhost:7000";
+
+  // ── STATE ──────────────────────────────────────────────────────
+  let allNotices = [];
+  let allMatches = [];
+  let allThemes  = [];
+  let activeTab  = "AIRO";
+
+  // ── FETCH HELPERS ──────────────────────────────────────────────
+  async function fetchJSON(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  // ── LOAD ALL DATA ──────────────────────────────────────────────
+  async function loadAll() {
+    try {
+      const [noticeRes, eventRes] = await Promise.all([
+        fetchJSON(`${API}/announcements/active`),
+        fetchJSON(`${API}/events/current`)
+      ]);
+
+      allNotices = noticeRes.data || [];
+      allMatches = [];
+      allThemes = [];
+
+      document.getElementById("stat-notices").textContent = allNotices.length;
+      document.getElementById("stat-live").textContent = 0;
+      document.getElementById("stat-events").textContent = eventRes.data ? 1 : 0;
+      document.getElementById("stat-theme").textContent =
+        eventRes.data?.theme?.toUpperCase() || "NONE";
+
+      buildTicker(allNotices, []);
+      renderNotices();
+      renderMatches();
+      renderThemes();
+
+    } catch (err) {
+      console.error("Load failed:", err);
+    }
+  }
+
+
+  // ── TICKER ─────────────────────────────────────────────────────
+  function buildTicker(notices, matches) {
+    const items = [
+      ...matches.filter(m => m.status === "live").map(m =>
+        `<span class="ticker-item"><span class="ticker-sep">▶</span> ${m.sport} — ${m.team1} vs ${m.team2} · ${m.score}</span>`
+      ),
+      ...notices.slice(0,5).map(n =>
+        `<span class="ticker-item"><span class="ticker-sep">▶</span> ${n.title}</span>`
+      ),
+    ];
+    const doubled = [...items, ...items]; // loop
+    document.getElementById("ticker").innerHTML = doubled.join("");
+  }
+
+  // ── NOTICES ────────────────────────────────────────────────────
+  function setTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll(".event-tab").forEach(el => el.classList.remove("active"));
+    const btns = document.querySelectorAll(".event-tab");
+    if (tab === "AIRO")   btns[0].classList.add("active");
+    if (tab === "AETHER") btns[1].classList.add("active");
+    if (tab === "ALL")    btns[2].classList.add("active");
+    renderNotices();
+  }
+
+  function renderNotices() {
+    const filtered = allNotices.filter(n =>
+      activeTab === "ALL" ? true :
+      (n.event_type || "").toUpperCase() === activeTab ||
+      (n.event_type || "").toUpperCase() === "GENERAL"
+    );
+
+    document.getElementById("notice-count").textContent = filtered.length + " ITEMS";
+
+    if (filtered.length === 0) {
+      document.getElementById("notices-list").innerHTML =
+        `<div class="loading-row" style="color:var(--text-muted)">NO NOTICES FOR THIS EVENT</div>`;
+      return;
+    }
+
+    document.getElementById("notices-list").innerHTML = filtered.map(n => {
+      const type = (n.event_type || "GENERAL").toUpperCase();
+      const isPink = type === "AETHER";
+      const typeClass = type === "GENERAL" ? "general" : type.toLowerCase();
+      const t = new Date(n.created_at);
+      const time = t.getHours().toString().padStart(2,"0") + ":" + t.getMinutes().toString().padStart(2,"0");
+      return `
+        <div class="notice-card ${isPink?"pink":""}" onclick="openNotice(${n.id})">
+          <div class="notice-meta">
+            <span class="notice-type ${typeClass}">${type}</span>
+            <span class="notice-time">${time}</span>
+          </div>
+          <div class="notice-title">${n.title}</div>
+          <div class="notice-desc">${(n.description||"").substring(0,90)}${(n.description||"").length>90?"…":""}</div>
+        </div>`;
+    }).join("");
+  }
+
+  // ── MATCHES ────────────────────────────────────────────────────
+  function renderMatches() {
+    document.getElementById("match-count").textContent = allMatches.length + " MATCHES";
+
+    if (allMatches.length === 0) {
+      document.getElementById("matches-list").innerHTML = `<div class="error-row">NO MATCHES SCHEDULED</div>`;
+      return;
+    }
+
+    document.getElementById("matches-list").innerHTML = allMatches.map(m => `
+      <div class="match-card">
+        <div class="match-sport">${m.sport || "SPORT"}</div>
+        <div class="match-teams">
+          <div class="team-name left">${m.team1}</div>
+          <div class="score-block">
+            <div class="score-text">${m.score || "TBD"}</div>
+            <span class="match-status ${(m.status||"upcoming").toLowerCase()}">${(m.status||"UPCOMING").toUpperCase()}</span>
+          </div>
+          <div class="team-name right">${m.team2}</div>
+        </div>
+      </div>`).join("");
+  }
+
+  // ── THEMES ─────────────────────────────────────────────────────
+  function renderThemes() {
+    const days = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+    const todayAbbr = days[new Date().getDay()];
+
+    if (allThemes.length === 0) {
+      document.getElementById("themes-list").innerHTML = `<div class="error-row">NO THEMES CONFIGURED</div>`;
+      return;
+    }
+
+    document.getElementById("themes-list").innerHTML = allThemes.map(t => {
+      const isToday = (t.day||"").toUpperCase().includes(todayAbbr);
+      return `
+        <div class="theme-card">
+          <div class="theme-day">${t.day}</div>
+          <div class="theme-name">${t.theme}</div>
+          ${isToday ? '<span class="theme-today">TODAY</span>' : ''}
+        </div>`;
+    }).join("");
+  }
+
+  // ── MODAL ──────────────────────────────────────────────────────
+  function openNotice(id) {
+    const n = allNotices.find(x => x.id === id);
+    if (!n) return;
+    const type = (n.event_type || "GENERAL").toUpperCase();
+    const typeClass = type === "GENERAL" ? "general" : type.toLowerCase();
+    document.getElementById("modal-tag").innerHTML =
+      `<span class="notice-type ${typeClass}">${type}</span>`;
+    document.getElementById("modal-title").textContent = n.title;
+    document.getElementById("modal-body").textContent  = n.description || "No description.";
+    const t = new Date(n.created_at);
+    document.getElementById("modal-footer").textContent =
+      "POSTED " + t.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) + " · " + t.toLocaleDateString();
+    document.getElementById("modal").classList.add("open");
+  }
+
+  function closeModal(e) {
+    if (e.target.id === "modal") document.getElementById("modal").classList.remove("open");
+  }
+
+  // ── CLOCK ──────────────────────────────────────────────────────
+  function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").textContent =
+      now.toLocaleTimeString("en-IN", {hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  }
+
+  // ── AUTO REFRESH every 30s ─────────────────────────────────────
+  loadAll();
+  updateClock();
+  setInterval(updateClock, 1000);
+  setInterval(loadAll, 30000);
+  </script>
+  </body>
+  </html>
