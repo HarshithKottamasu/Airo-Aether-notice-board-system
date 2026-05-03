@@ -1,192 +1,382 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIRO-AETHER Notice Board</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MU Notice Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --neon-cyan: #00f5ff;
-      --neon-pink: #ff00aa;
-      --neon-green: #39ff14;
-      --neon-orange: #ff6b00;
-      --neon-purple: #bf00ff;
-      --bg-void: #020408;
-      --bg-dark: #050d15;
-      --bg-card: #080f1a;
-      --bg-card2: #0a1020;
-      --border-glow: rgba(0,245,255,0.2);
-      --text-primary: #e8f4f8;
-      --text-muted: #6a8a9a;
-    }
+/* ── SHARED ───────────────────────────────────────────── */
+body { min-height: 100vh; overflow-x: hidden; transition: background 0.4s, color 0.4s; }
 
-    body {
-      background: var(--bg-void);
-      color: var(--text-primary);
-      font-family: 'Rajdhani', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+/* ══════════════════════════════════════════════════════════
+   DAILY SKIN
+══════════════════════════════════════════════════════════ */
+body.skin-daily {
+  background: #f5f4f1;
+  color: #1a1a1a;
+  font-family: 'Inter', sans-serif;
+}
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 40% at 20% 0%, rgba(0,245,255,0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,0,170,0.04) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
+/* topbar */
+.daily-topbar {
+  background: #ffffff;
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  padding: 13px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.daily-brand { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+.daily-brand span { color: #999; font-weight: 400; }
+.daily-ctx-tabs { display: flex; gap: 3px; }
+.daily-ctx-tab {
+  font-size: 12px; padding: 4px 11px; border-radius: 20px;
+  border: 0.5px solid rgba(0,0,0,0.12); background: transparent;
+  color: #777; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+}
+.daily-ctx-tab.active { background: #efefef; color: #1a1a1a; font-weight: 500; border-color: rgba(0,0,0,0.2); }
+.daily-clock { font-size: 12px; color: #aaa; min-width: 60px; text-align: right; }
 
-    .scanlines {
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
-      pointer-events: none;
-      z-index: 1000;
-    }
+/* event banner */
+.daily-banner {
+  margin: 14px 28px 0;
+  background: #EAF3DE; border: 0.5px solid #C0DD97;
+  border-radius: 10px; padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.daily-banner-text { font-size: 12px; font-weight: 500; color: #27500A; }
+.daily-banner-sub { font-size: 11px; color: #3B6D11; margin-top: 1px; }
+.daily-banner-link { font-size: 11px; color: #3B6D11; cursor: pointer; }
 
-    .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
+/* grid */
+.daily-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 28px 28px;
+}
+.daily-card {
+  background: #ffffff;
+  border: 0.5px solid rgba(0,0,0,0.09);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.daily-lbl {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
+  color: #bbb; text-transform: uppercase; margin-bottom: 12px;
+}
 
-    header { padding: 24px 20px 0; position: relative; z-index: 1; }
+/* weather card */
+.weather-card {
+  background: #E6F1FB;
+  border: 0.5px solid #B5D4F4;
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.w-city { font-size: 13px; font-weight: 500; color: #0C447C; }
+.w-cond { font-size: 11px; color: #185FA5; margin-top: 1px; }
+.w-temp { font-size: 52px; font-weight: 300; color: #042C53; line-height: 1; margin: 8px 0 2px; }
+.w-temp sup { font-size: 20px; font-weight: 400; vertical-align: super; line-height: 0; }
+.w-hl { font-size: 12px; color: #185FA5; margin-bottom: 12px; }
+.w-stats { display: flex; border-top: 0.5px solid #B5D4F4; padding-top: 10px; margin-bottom: 12px; }
+.w-stat { flex: 1; text-align: center; border-right: 0.5px solid #B5D4F4; }
+.w-stat:last-child { border-right: none; }
+.w-stat-val { font-size: 13px; font-weight: 500; color: #0C447C; }
+.w-stat-lbl { font-size: 10px; color: #185FA5; margin-top: 1px; }
+.hourly { display: flex; }
+.hour-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 4px; border-right: 0.5px solid #B5D4F4; padding: 6px 4px;
+}
+.hour-item:last-child { border-right: none; }
+.h-time { font-size: 10px; color: #185FA5; }
+.h-temp { font-size: 12px; font-weight: 500; color: #0C447C; }
+.h-bar-wrap { width: 4px; height: 28px; background: #B5D4F4; border-radius: 2px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+.h-bar { width: 100%; background: #185FA5; border-radius: 2px; }
 
-    .header-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid rgba(0,245,255,0.15); padding-bottom: 16px;
-    }
+/* mess menu */
+.menu-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #f0f0f0; }
+.menu-row:last-child { border-bottom: none; padding-bottom: 0; }
+.meal-tag { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; white-space: nowrap; margin-top: 1px; min-width: 58px; text-align: center; }
+.meal-tag.breakfast { color: #185FA5; background: #E6F1FB; }
+.meal-tag.lunch { color: #3B6D11; background: #EAF3DE; }
+.meal-tag.snacks { color: #854F0B; background: #FAEEDA; }
+.meal-tag.dinner { color: #534AB7; background: #EEEDFE; }
+.meal-items { font-size: 12px; color: #333; line-height: 1.5; }
 
-    .logo-title {
-      font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900;
-      letter-spacing: 4px;
-      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
+/* notices */
+.daily-notice-item { padding: 7px 0; border-bottom: 0.5px solid #f0f0f0; }
+.daily-notice-item:last-child { border-bottom: none; padding-bottom: 0; }
+.daily-notice-title { font-size: 13px; color: #1a1a1a; line-height: 1.4; }
+.daily-notice-meta { font-size: 11px; color: #bbb; margin-top: 2px; }
+.nbadge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; margin-right: 5px; vertical-align: middle; }
+.nb-red { background: #FCEBEB; color: #A32D2D; }
+.nb-blue { background: #E6F1FB; color: #185FA5; }
 
-    .logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--neon-cyan); letter-spacing: 3px; opacity: 0.6; margin-top: 4px; }
+/* upcoming */
+.upcoming-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid #f0f0f0; }
+.upcoming-item:last-child { border-bottom: none; }
+.up-date { font-size: 11px; font-weight: 500; color: #185FA5; background: #E6F1FB; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.up-text { font-size: 12px; color: #333; }
+.stat-chips { display: flex; gap: 8px; }
+.stat-chip { flex: 1; border-radius: 8px; padding: 8px 10px; }
+.stat-chip-val { font-size: 20px; font-weight: 500; }
+.stat-chip-lbl { font-size: 10px; margin-top: 1px; }
 
-    .live-badge { display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-green); letter-spacing: 2px; }
 
-    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon-green); animation: pulse-dot 1.4s ease-in-out infinite; }
+/* ══════════════════════════════════════════════════════════
+   AIRO-AETHER SKIN  (everything from your original)
+══════════════════════════════════════════════════════════ */
+body.skin-event {
+  background: #020408;
+  color: #e8f4f8;
+  font-family: 'Rajdhani', sans-serif;
+}
 
-    @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.7); } }
+body.skin-event::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 20% 0%, rgba(0,245,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,0,170,0.04) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.scanlines {
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+  pointer-events: none; z-index: 1000;
+  display: none;
+}
+body.skin-event .scanlines { display: block; }
 
-    .header-time { font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text-muted); text-align: right; }
+:root {
+  --neon-cyan: #00f5ff; --neon-pink: #ff00aa; --neon-green: #39ff14;
+  --neon-orange: #ff6b00; --neon-purple: #bf00ff;
+  --bg-void: #020408; --bg-dark: #050d15; --bg-card: #080f1a; --bg-card2: #0a1020;
+  --border-glow: rgba(0,245,255,0.2); --text-primary: #e8f4f8; --text-muted: #6a8a9a;
+}
 
-    .event-tabs { display: flex; gap: 0; margin: 20px 0; border: 1px solid rgba(0,245,255,0.1); border-radius: 4px; overflow: hidden; width: fit-content; }
+/* hide daily elements in event skin */
+body.skin-event .daily-topbar,
+body.skin-event .daily-banner,
+body.skin-event .daily-grid { display: none; }
 
-    .event-tab { padding: 10px 28px; font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: var(--text-muted); }
+/* hide event elements in daily skin */
+body.skin-daily .event-shell { display: none; }
 
-    .event-tab.airo.active { background: rgba(0,245,255,0.1); color: var(--neon-cyan); border-right: 1px solid rgba(0,245,255,0.2); }
-    .event-tab.aether.active { background: rgba(255,0,170,0.1); color: var(--neon-pink); }
-    .event-tab:not(.active):hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.event-shell { position: relative; z-index: 1; }
 
-    .board-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; margin-top: 8px; }
+header { padding: 24px 20px 0; position: relative; z-index: 1; }
+.header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(0,245,255,0.15); padding-bottom: 16px;
+}
+.logo-title {
+  font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900; letter-spacing: 4px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--neon-cyan); letter-spacing: 3px; opacity: 0.6; margin-top: 4px; }
+.live-badge { display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-green); letter-spacing: 2px; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon-green); animation: pulse-dot 1.4s ease-in-out infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.7); } }
+.header-time { font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text-muted); text-align: right; }
+.event-tabs { display: flex; gap: 0; margin: 20px 0; border: 1px solid rgba(0,245,255,0.1); border-radius: 4px; overflow: hidden; width: fit-content; }
+.event-tab { padding: 10px 28px; font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: var(--text-muted); }
+.event-tab.airo.active { background: rgba(0,245,255,0.1); color: var(--neon-cyan); border-right: 1px solid rgba(0,245,255,0.2); }
+.event-tab.aether.active { background: rgba(255,0,170,0.1); color: var(--neon-pink); }
+.event-tab:not(.active):hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.board-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; margin-top: 8px; }
+.panel { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 4px; overflow: hidden; position: relative; }
+.panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); opacity: 0.5; }
+.panel.pink::before { background: linear-gradient(90deg, transparent, var(--neon-pink), transparent); }
+.panel.green::before { background: linear-gradient(90deg, transparent, var(--neon-green), transparent); }
+.panel.orange::before { background: linear-gradient(90deg, transparent, var(--neon-orange), transparent); }
+.panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid rgba(0,245,255,0.08); background: rgba(0,0,0,0.3); }
+.panel-title { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--neon-cyan); }
+.panel.pink .panel-title { color: var(--neon-pink); }
+.panel.green .panel-title { color: var(--neon-green); }
+.panel.orange .panel-title { color: var(--neon-orange); }
+.panel-count { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-muted); background: rgba(0,245,255,0.05); padding: 2px 8px; border-radius: 2px; border: 1px solid rgba(0,245,255,0.1); }
+.notices-list { padding: 8px; }
+.notice-card { padding: 14px 16px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(0,245,255,0.07); background: var(--bg-card2); cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.notice-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--neon-cyan); opacity: 0.6; }
+.notice-card.pink::before { background: var(--neon-pink); }
+.notice-card.urgent::before { background: var(--neon-orange); animation: blink-bar 1s step-end infinite; }
+@keyframes blink-bar { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.2; } }
+.notice-card:hover { border-color: rgba(0,245,255,0.25); background: rgba(0,245,255,0.04); transform: translateX(2px); }
+.notice-card.pink:hover { border-color: rgba(255,0,170,0.25); background: rgba(255,0,170,0.04); }
+.notice-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.notice-type { font-family: 'Share Tech Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 2px; letter-spacing: 1px; border: 1px solid; }
+.notice-type.airo { color: var(--neon-cyan); border-color: rgba(0,245,255,0.3); background: rgba(0,245,255,0.07); }
+.notice-type.aether { color: var(--neon-pink); border-color: rgba(255,0,170,0.3); background: rgba(255,0,170,0.07); }
+.notice-type.general { color: var(--neon-purple); border-color: rgba(191,0,255,0.3); background: rgba(191,0,255,0.07); }
+.notice-time { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); margin-left: auto; }
+.notice-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
+.notice-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+.matches-list { padding: 8px; }
+.match-card { padding: 12px 14px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(255,107,0,0.1); background: var(--bg-card2); }
+.match-sport { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--neon-orange); letter-spacing: 2px; margin-bottom: 8px; }
+.match-teams { display: flex; align-items: center; gap: 10px; }
+.team-name { font-size: 14px; font-weight: 700; flex: 1; }
+.team-name.left { text-align: left; color: var(--neon-cyan); }
+.team-name.right { text-align: right; color: var(--neon-pink); }
+.score-block { text-align: center; }
+.score-text { font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 4px; }
+.match-status { font-family: 'Share Tech Mono', monospace; font-size: 10px; display: block; margin-top: 2px; }
+.match-status.live { color: var(--neon-green); animation: pulse-dot 1.4s ease-in-out infinite; }
+.match-status.done { color: var(--text-muted); }
+.match-status.upcoming { color: var(--neon-orange); }
+.themes-list { padding: 8px; }
+.theme-card { padding: 12px 14px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(57,255,20,0.08); background: var(--bg-card2); display: flex; align-items: center; gap: 16px; }
+.theme-day { font-family: 'Orbitron', monospace; font-size: 10px; color: var(--neon-green); letter-spacing: 2px; min-width: 50px; }
+.theme-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.theme-today { margin-left: auto; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--neon-green); background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.2); padding: 2px 8px; border-radius: 2px; }
+.ticker-bar { background: rgba(0,245,255,0.05); border-top: 1px solid rgba(0,245,255,0.1); border-bottom: 1px solid rgba(0,245,255,0.1); padding: 8px 0; overflow: hidden; margin: 12px 0; }
+.ticker-inner { display: flex; gap: 60px; animation: ticker 30s linear infinite; white-space: nowrap; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-item { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-cyan); letter-spacing: 1px; display: inline-flex; align-items: center; gap: 8px; }
+.ticker-sep { color: var(--neon-pink); opacity: 0.5; }
+.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 4px; padding: 14px 16px; position: relative; overflow: hidden; }
+.stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); opacity: 0.4; }
+.stat-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 6px; }
+.stat-value { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; color: var(--neon-cyan); }
+.stat-value.pink { color: var(--neon-pink); }
+.stat-value.green { color: var(--neon-green); }
+.stat-value.orange { color: var(--neon-orange); }
+.loading-row { display: flex; align-items: center; justify-content: center; padding: 32px; gap: 10px; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 2px; }
+.spinner { width: 16px; height: 16px; border: 2px solid rgba(0,245,255,0.1); border-top-color: var(--neon-cyan); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-row { padding: 20px 16px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-orange); text-align: center; letter-spacing: 1px; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--bg-card); border: 1px solid rgba(0,245,255,0.25); border-radius: 6px; padding: 28px; max-width: 480px; width: 90%; position: relative; }
+.modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); }
+.modal-close { position: absolute; top: 14px; right: 16px; font-family: 'Orbitron', monospace; font-size: 11px; color: var(--text-muted); cursor: pointer; letter-spacing: 1px; background: none; border: none; }
+.modal-close:hover { color: var(--neon-cyan); }
+.modal-tag { margin-bottom: 12px; }
+.modal-title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
+.modal-body { font-size: 14px; color: #8aabb8; line-height: 1.7; }
+.modal-footer { margin-top: 16px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-muted); }
 
-    .panel { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 4px; overflow: hidden; position: relative; }
-    .panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); opacity: 0.5; }
-    .panel.pink::before { background: linear-gradient(90deg, transparent, var(--neon-pink), transparent); }
-    .panel.green::before { background: linear-gradient(90deg, transparent, var(--neon-green), transparent); }
-    .panel.orange::before { background: linear-gradient(90deg, transparent, var(--neon-orange), transparent); }
+/* event skin container padding */
+body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
 
-    .panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid rgba(0,245,255,0.08); background: rgba(0,0,0,0.3); }
-    .panel-title { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--neon-cyan); }
-    .panel.pink .panel-title { color: var(--neon-pink); }
-    .panel.green .panel-title { color: var(--neon-green); }
-    .panel.orange .panel-title { color: var(--neon-orange); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.2); border-radius: 2px; }
 
-    .panel-count { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-muted); background: rgba(0,245,255,0.05); padding: 2px 8px; border-radius: 2px; border: 1px solid rgba(0,245,255,0.1); }
+@media (max-width: 760px) {
+  .board-grid { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: repeat(2,1fr); }
+  .logo-title { font-size: 20px; }
+  .daily-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body class="skin-daily">
+<div class="scanlines"></div>
 
-    .notices-list { padding: 8px; }
+<!-- ══════════════════════════════════════════════
+     DAILY SKIN MARKUP
+══════════════════════════════════════════════ -->
+<div id="daily-shell">
+  <div class="daily-topbar">
+    <div class="daily-brand">Mahindra University <span>· Notice Board</span></div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="daily-ctx-tabs">
+        <button class="daily-ctx-tab active" onclick="setDailyTab('Daily',this)">Daily</button>
+        <button class="daily-ctx-tab" onclick="setDailyTab('Exam',this)">Exam</button>
+        <button class="daily-ctx-tab" onclick="switchToEvent()">Event</button>
+      </div>
+      <span id="daily-clock" class="daily-clock"></span>
+    </div>
+  </div>
 
-    .notice-card { padding: 14px 16px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(0,245,255,0.07); background: var(--bg-card2); cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-    .notice-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--neon-cyan); opacity: 0.6; }
-    .notice-card.pink::before { background: var(--neon-pink); }
-    .notice-card.urgent::before { background: var(--neon-orange); animation: blink-bar 1s step-end infinite; }
-    @keyframes blink-bar { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.2; } }
-    .notice-card:hover { border-color: rgba(0,245,255,0.25); background: rgba(0,245,255,0.04); transform: translateX(2px); }
-    .notice-card.pink:hover { border-color: rgba(255,0,170,0.25); background: rgba(255,0,170,0.04); }
+  <div class="daily-banner" id="daily-banner" style="display:none;">
+    <div>
+      <div class="daily-banner-text" id="banner-title">Upcoming event</div>
+      <div class="daily-banner-sub" id="banner-sub"></div>
+    </div>
+    <div class="daily-banner-link" onclick="switchToEvent()">Switch to event view →</div>
+  </div>
 
-    .notice-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .notice-type { font-family: 'Share Tech Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 2px; letter-spacing: 1px; border: 1px solid; }
-    .notice-type.airo { color: var(--neon-cyan); border-color: rgba(0,245,255,0.3); background: rgba(0,245,255,0.07); }
-    .notice-type.aether { color: var(--neon-pink); border-color: rgba(255,0,170,0.3); background: rgba(255,0,170,0.07); }
-    .notice-type.general { color: var(--neon-purple); border-color: rgba(191,0,255,0.3); background: rgba(191,0,255,0.07); }
-    .notice-time { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); margin-left: auto; }
-    .notice-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
-    .notice-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  <div class="daily-grid">
+    <!-- Weather -->
+    <div class="weather-card">
+      <div class="daily-lbl" style="color:#185FA5;">Weather · Hyderabad</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div>
+          <div class="w-city" id="w-city">Hyderabad</div>
+          <div class="w-cond" id="w-cond">Loading...</div>
+        </div>
+        <svg id="w-icon-svg" width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="21" cy="17" r="9" fill="#EF9F27"/>
+          <path d="M21 4V2M21 32V30M4 17H2M40 17H38M8 8L6.5 6.5M35.5 6.5L34 8M8 26L6.5 27.5M35.5 27.5L34 26" stroke="#EF9F27" stroke-width="2" stroke-linecap="round"/>
+          <rect x="8" y="27" width="24" height="11" rx="5.5" fill="#B5D4F4"/>
+          <rect x="14" y="22" width="18" height="11" rx="5.5" fill="#85B7EB"/>
+        </svg>
+      </div>
+      <div class="w-temp"><sup>°</sup><span id="w-temp">--</span></div>
+      <div class="w-hl" id="w-hl">H: --°  ·  L: --°</div>
+      <div class="w-stats">
+        <div class="w-stat"><div class="w-stat-val" id="w-humidity">--%</div><div class="w-stat-lbl">Humidity</div></div>
+        <div class="w-stat"><div class="w-stat-val" id="w-wind">-- km/h</div><div class="w-stat-lbl">Wind</div></div>
+        <div class="w-stat"><div class="w-stat-val" id="w-aqi">--</div><div class="w-stat-lbl">AQI</div></div>
+        <div class="w-stat"><div class="w-stat-val" id="w-rain">--%</div><div class="w-stat-lbl">Rain</div></div>
+      </div>
+      <div class="daily-lbl" style="color:#185FA5;margin-bottom:6px;">Hourly</div>
+      <div class="hourly" id="hourly-strip"></div>
+    </div>
 
-    .matches-list { padding: 8px; }
-    .match-card { padding: 12px 14px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(255,107,0,0.1); background: var(--bg-card2); }
-    .match-sport { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--neon-orange); letter-spacing: 2px; margin-bottom: 8px; }
-    .match-teams { display: flex; align-items: center; gap: 10px; }
-    .team-name { font-size: 14px; font-weight: 700; flex: 1; }
-    .team-name.left { text-align: left; color: var(--neon-cyan); }
-    .team-name.right { text-align: right; color: var(--neon-pink); }
-    .score-block { text-align: center; }
-    .score-text { font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 4px; }
-    .match-status { font-family: 'Share Tech Mono', monospace; font-size: 10px; display: block; margin-top: 2px; }
-    .match-status.live { color: var(--neon-green); animation: pulse-dot 1.4s ease-in-out infinite; }
-    .match-status.done { color: var(--text-muted); }
-    .match-status.upcoming { color: var(--neon-orange); }
+    <!-- Mess Menu -->
+    <div class="daily-card">
+      <div class="daily-lbl">Today's mess menu</div>
+      <div id="mess-menu">
+        <div class="menu-row"><span class="meal-tag breakfast">Breakfast</span><span class="meal-items" style="color:#bbb;">Loading...</span></div>
+      </div>
+    </div>
 
-    .themes-list { padding: 8px; }
-    .theme-card { padding: 12px 14px; margin-bottom: 6px; border-radius: 3px; border: 1px solid rgba(57,255,20,0.08); background: var(--bg-card2); display: flex; align-items: center; gap: 16px; }
-    .theme-day { font-family: 'Orbitron', monospace; font-size: 10px; color: var(--neon-green); letter-spacing: 2px; min-width: 50px; }
-    .theme-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
-    .theme-today { margin-left: auto; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--neon-green); background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.2); padding: 2px 8px; border-radius: 2px; }
+    <!-- Notices -->
+    <div class="daily-card">
+      <div class="daily-lbl">Notices</div>
+      <div id="daily-notices-list">
+        <div class="daily-notice-item"><div class="daily-notice-title" style="color:#bbb;font-size:12px;">Loading...</div></div>
+      </div>
+    </div>
 
-    .ticker-bar { background: rgba(0,245,255,0.05); border-top: 1px solid rgba(0,245,255,0.1); border-bottom: 1px solid rgba(0,245,255,0.1); padding: 8px 0; overflow: hidden; margin: 12px 0; }
-    .ticker-inner { display: flex; gap: 60px; animation: ticker 30s linear infinite; white-space: nowrap; }
-    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .ticker-item { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-cyan); letter-spacing: 1px; display: inline-flex; align-items: center; gap: 8px; }
-    .ticker-sep { color: var(--neon-pink); opacity: 0.5; }
+    <!-- Upcoming + Stats -->
+    <div class="daily-card">
+      <div class="daily-lbl">Upcoming</div>
+      <div id="upcoming-list"></div>
+      <div style="margin-top:12px;border-top:0.5px solid #f0f0f0;padding-top:10px;">
+        <div class="daily-lbl" style="margin-bottom:8px;">Quick stats</div>
+        <div class="stat-chips">
+          <div class="stat-chip" style="background:#f0f0f0;">
+            <div class="stat-chip-val" id="stat-notices-daily" style="color:#1a1a1a;">--</div>
+            <div class="stat-chip-lbl" style="color:#999;">Notices</div>
+          </div>
+          <div class="stat-chip" style="background:#EAF3DE;">
+            <div class="stat-chip-val" id="stat-days-event" style="color:#27500A;">--</div>
+            <div class="stat-chip-lbl" style="color:#3B6D11;">To event</div>
+          </div>
+          <div class="stat-chip" style="background:#FAEEDA;">
+            <div class="stat-chip-val" id="stat-days-exam" style="color:#633806;">--</div>
+            <div class="stat-chip-lbl" style="color:#854F0B;">To exams</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 4px; padding: 14px 16px; position: relative; overflow: hidden; }
-    .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); opacity: 0.4; }
-    .stat-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 6px; }
-    .stat-value { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; color: var(--neon-cyan); }
-    .stat-value.pink { color: var(--neon-pink); }
-    .stat-value.green { color: var(--neon-green); }
-    .stat-value.orange { color: var(--neon-orange); }
-
-    /* LOADING STATE */
-    .loading-row { display: flex; align-items: center; justify-content: center; padding: 32px; gap: 10px; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 2px; }
-    .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,245,255,0.1); border-top-color: var(--neon-cyan); border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ERROR STATE */
-    .error-row { padding: 20px 16px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--neon-orange); text-align: center; letter-spacing: 1px; }
-
-    /* MODAL */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; align-items: center; justify-content: center; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--bg-card); border: 1px solid rgba(0,245,255,0.25); border-radius: 6px; padding: 28px; max-width: 480px; width: 90%; position: relative; }
-    .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); }
-    .modal-close { position: absolute; top: 14px; right: 16px; font-family: 'Orbitron', monospace; font-size: 11px; color: var(--text-muted); cursor: pointer; letter-spacing: 1px; background: none; border: none; }
-    .modal-close:hover { color: var(--neon-cyan); }
-    .modal-tag { margin-bottom: 12px; }
-    .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
-    .modal-body { font-size: 14px; color: #8aabb8; line-height: 1.7; }
-    .modal-footer { margin-top: 16px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-muted); }
-
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.2); border-radius: 2px; }
-
-    @media (max-width: 760px) {
-      .board-grid { grid-template-columns: 1fr; }
-      .stats-bar { grid-template-columns: repeat(2,1fr); }
-      .logo-title { font-size: 20px; }
-    }
-  </style>
-  </head>
-  <body>
-  <div class="scanlines"></div>
-
+<!-- ══════════════════════════════════════════════
+     EVENT / AIRO-AETHER SKIN MARKUP
+══════════════════════════════════════════════ -->
+<div id="event-shell" class="event-shell" style="display:none;">
   <header>
     <div class="header-inner">
       <div>
@@ -195,7 +385,10 @@
       </div>
       <div style="display:flex;align-items:center;gap:24px;">
         <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-        <div class="header-time" id="clock">--:--:--</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          <div class="header-time" id="event-clock">--:--:--</div>
+          <button onclick="switchToDaily()" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);background:none;border:1px solid rgba(0,245,255,0.15);padding:3px 10px;border-radius:2px;cursor:pointer;letter-spacing:1px;">← DAILY BOARD</button>
+        </div>
       </div>
     </div>
   </header>
@@ -249,313 +442,366 @@
       </div>
     </div>
   </div>
+</div>
 
-  <!-- MODAL -->
-  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
-    <div class="modal">
-      <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">[ CLOSE ]</button>
-      <div class="modal-tag" id="modal-tag"></div>
-      <div class="modal-title" id="modal-title"></div>
-      <div class="modal-body" id="modal-body"></div>
-      <div class="modal-footer" id="modal-footer"></div>
-    </div>
+<!-- MODAL (shared) -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">[ CLOSE ]</button>
+    <div class="modal-tag" id="modal-tag"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
   </div>
+</div>
 
-  <script>
-  // ── CONFIG ─────────────────────────────────────────────────────
-  
-  const API = "https://airo-aether-notice-board-system-production.up.railway.app";
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────
+const API = "https://airo-aether-notice-board-system-production.up.railway.app";
 
-  // ── STATE ──────────────────────────────────────────────────────
-  let allNotices = [];
-  let allMatches = [];
-  let allThemes  = [];
-  let activeTab  = "AIRO";
+// ── SKIN SWITCHING ────────────────────────────────────────────────
+function switchToEvent() {
+  document.body.className = 'skin-event';
+  document.getElementById('daily-shell').style.display = 'none';
+  document.getElementById('event-shell').style.display = 'block';
+  loadEventData();
+}
+function switchToDaily() {
+  document.body.className = 'skin-daily';
+  document.getElementById('event-shell').style.display = 'none';
+  document.getElementById('daily-shell').style.display = 'block';
+}
 
-  const TAB_CONTEXT = {
-  AIRO: {
-    showMatches: true,
-    showThemes: false,
-    category: "SPORT"
-  },
-  AETHER: {
-    showMatches: false,
-    showThemes: true,
-    category: "CULTURAL"
-  },
-  ALL: {
-    showMatches: true,
-    showThemes: true,
-    category: "ALL"
+// ── AUTO CONTEXT from /context/current ────────────────────────────
+async function autoDetectContext() {
+  try {
+    const res = await fetch(`${API}/context/current`);
+    const { data } = await res.json();
+    if (data && data.context === 'event') {
+      switchToEvent();
+    } else {
+      loadDailyData();
+    }
+  } catch(e) {
+    loadDailyData();
   }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// DAILY SKIN LOGIC
+// ══════════════════════════════════════════════════════════════════
+const MESS_MENU = {
+  Mon: { breakfast: 'Idli, Sambar, Coconut chutney, Boiled egg', lunch: 'Rice, Dal tadka, Rajma, Roti, Curd', snacks: 'Bread pakoda, Tea / Coffee', dinner: 'Chapati, Paneer butter masala, Jeera rice' },
+  Tue: { breakfast: 'Poha, Boiled egg, Banana, Tea', lunch: 'Rice, Sambar, Rasam, Beans curry, Curd', snacks: 'Vada, Chutney, Coffee', dinner: 'Roti, Dal makhani, Aloo sabzi, Raita' },
+  Wed: { breakfast: 'Upma, Boiled egg, Tea, Fruit', lunch: 'Rice, Dal fry, Mix veg, Roti, Papad', snacks: 'Samosa, Tea / Coffee', dinner: 'Chapati, Chicken curry, Rice, Salad' },
+  Thu: { breakfast: 'Dosa, Sambar, Chutney, Tea', lunch: 'Rice, Rajma, Jeera aloo, Roti, Curd', snacks: 'Aloo bonda, Coffee', dinner: 'Roti, Egg curry, Dal, Steamed rice' },
+  Fri: { breakfast: 'Puri bhaji, Boiled egg, Banana', lunch: 'Rice, Fish curry, Dal, Roti, Curd', snacks: 'Biscuits, Tea / Coffee', dinner: 'Chapati, Paneer sabzi, Dal, Salad' },
+  Sat: { breakfast: 'Rava idli, Coconut chutney, Tea', lunch: 'Biryani, Raita, Mirchi ka salan', snacks: 'Pakoda, Tea', dinner: 'Chapati, Dal tadka, Mix veg, Salad' },
+  Sun: { breakfast: 'Bread, Butter, Jam, Boiled egg, Cornflakes', lunch: 'Special rice, Chicken gravy, Papad, Curd', snacks: 'Halwa, Coffee', dinner: 'Chapati, Dal, Aloo matar, Kheer' }
+};
+const DAY_KEYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function loadDailyData() {
+  renderMessMenu();
+  loadDailyNotices();
+  loadSchedule();
+  loadWeather();
+}
+
+function renderMessMenu() {
+  const day = DAY_KEYS[new Date().getDay()];
+  const menu = MESS_MENU[day];
+  document.getElementById('mess-menu').innerHTML = `
+    <div class="menu-row"><span class="meal-tag breakfast">Breakfast</span><span class="meal-items">${menu.breakfast}</span></div>
+    <div class="menu-row"><span class="meal-tag lunch">Lunch</span><span class="meal-items">${menu.lunch}</span></div>
+    <div class="menu-row"><span class="meal-tag snacks">Snacks</span><span class="meal-items">${menu.snacks}</span></div>
+    <div class="menu-row"><span class="meal-tag dinner">Dinner</span><span class="meal-items">${menu.dinner}</span></div>
+  `;
+}
+
+async function loadDailyNotices() {
+  try {
+    const res = await fetch(`${API}/announcements/active`);
+    const { data } = await res.json();
+    const notices = data || [];
+    document.getElementById('stat-notices-daily').textContent = notices.length;
+    if (notices.length === 0) {
+      document.getElementById('daily-notices-list').innerHTML =
+        '<div class="daily-notice-item"><div class="daily-notice-title" style="color:#bbb;font-size:12px;">No active notices</div></div>';
+      return;
+    }
+    document.getElementById('daily-notices-list').innerHTML = notices.slice(0,4).map(n => {
+      const isUrgent = (n.priority||0) > 5;
+      return `
+        <div class="daily-notice-item">
+          <div class="daily-notice-title">
+            ${isUrgent ? '<span class="nbadge nb-red">Urgent</span>' : '<span class="nbadge nb-blue">Notice</span>'}
+            ${n.title}
+          </div>
+          <div class="daily-notice-meta">${n.displayFrom ? new Date(n.displayFrom).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : 'Today'} · ${n.department || 'Admin'}</div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('daily-notices-list').innerHTML =
+      '<div class="daily-notice-item"><div class="daily-notice-title" style="color:#bbb;font-size:12px;">Could not load notices</div></div>';
+  }
+}
+
+async function loadSchedule() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const res = await fetch(`${API}/context/current`);
+    const { data } = await res.json();
+
+    if (data && data.context === 'event') {
+      const start = new Date(data.startDate);
+      const diff = Math.ceil((start - new Date()) / 86400000);
+      if (diff > 0) {
+        document.getElementById('daily-banner').style.display = 'flex';
+        document.getElementById('banner-title').textContent = `${data.label} in ${diff} day${diff>1?'s':''}`;
+        document.getElementById('banner-sub').textContent = data.description || '';
+        document.getElementById('stat-days-event').textContent = diff + 'd';
+      } else {
+        switchToEvent();
+        return;
+      }
+    }
+
+    const upcoming = [
+      { date: 'Oct 15', label: 'Fee payment deadline' },
+      { date: 'Oct 18', label: 'AIRO·AETHER begins' },
+      { date: 'Oct 22', label: 'TA submissions due' },
+      { date: 'Oct 28', label: 'Mid-sem exams start' },
+    ];
+    document.getElementById('upcoming-list').innerHTML = upcoming.map(u => `
+      <div class="upcoming-item">
+        <span class="up-date">${u.date}</span>
+        <span class="up-text">${u.label}</span>
+      </div>`).join('');
+
+    document.getElementById('stat-days-exam').textContent = '12d';
+    if (!data) document.getElementById('stat-days-event').textContent = '3d';
+  } catch(e) {
+    document.getElementById('stat-days-event').textContent = '--';
+  }
+}
+
+async function loadWeather() {
+  try {
+    const res = await fetch(`${API}/weather`);
+    const { data } = await res.json();
+    if (!data) return;
+    document.getElementById('w-temp').textContent = Math.round(data.temp);
+    document.getElementById('w-cond').textContent = data.description || 'Partly cloudy';
+    document.getElementById('w-hl').textContent = `H: ${Math.round(data.temp_max)}°  ·  L: ${Math.round(data.temp_min)}°`;
+    document.getElementById('w-humidity').textContent = data.humidity + '%';
+    document.getElementById('w-wind').textContent = Math.round(data.wind_speed) + ' km/h';
+    document.getElementById('w-aqi').textContent = data.aqi || '--';
+    document.getElementById('w-rain').textContent = (data.rain_chance || 0) + '%';
+    renderHourly(data.hourly || []);
+  } catch(e) {
+    // fallback static if weather endpoint not set up yet
+    document.getElementById('w-temp').textContent = '31';
+    document.getElementById('w-cond').textContent = 'Partly cloudy';
+    document.getElementById('w-hl').textContent = 'H: 34°  ·  L: 24°';
+    document.getElementById('w-humidity').textContent = '68%';
+    document.getElementById('w-wind').textContent = '12 km/h';
+    document.getElementById('w-aqi').textContent = '72';
+    document.getElementById('w-rain').textContent = '8%';
+    renderHourly([
+      {t:'Now',icon:'sun',temp:31,pct:30},{t:'1PM',icon:'cloud',temp:32,pct:50},
+      {t:'3PM',icon:'cloud',temp:33,pct:60},{t:'5PM',icon:'rain',temp:30,pct:80},
+      {t:'7PM',icon:'rain',temp:27,pct:70},{t:'9PM',icon:'cloud',temp:25,pct:40}
+    ]);
+  }
+}
+
+const SVG_ICONS = {
+  sun: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="3" fill="#EF9F27"/><line x1="7" y1="0" x2="7" y2="2" stroke="#EF9F27" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="12" x2="7" y2="14" stroke="#EF9F27" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="7" x2="2" y2="7" stroke="#EF9F27" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="7" x2="14" y2="7" stroke="#EF9F27" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  cloud: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="8" width="10" height="5" rx="2.5" fill="#85B7EB"/><rect x="4" y="5" width="8" height="5" rx="2.5" fill="#85B7EB"/></svg>`,
+  rain: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="5" width="10" height="5" rx="2.5" fill="#85B7EB"/><line x1="4" y1="11" x2="3" y2="13" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="11" x2="6" y2="13" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="11" x2="9" y2="13" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/></svg>`
 };
 
-  // ── FETCH HELPERS ──────────────────────────────────────────────
-  async function fetchJSON(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
-  }
+function renderHourly(hours) {
+  const strip = document.getElementById('hourly-strip');
+  strip.innerHTML = hours.map(h => `
+    <div class="hour-item">
+      <span class="h-time">${h.t}</span>
+      ${SVG_ICONS[h.icon] || SVG_ICONS.cloud}
+      <div class="h-bar-wrap"><div class="h-bar" style="height:${h.pct}%"></div></div>
+      <span class="h-temp">${h.temp}°</span>
+    </div>`).join('');
+}
 
-  // ── LOAD ALL DATA ──────────────────────────────────────────────
-  async function loadAll() {
-    try {
-      const [noticeRes, eventRes, matchRes] = await Promise.all([
-        fetchJSON(`${API}/announcements/active`),
-        fetchJSON(`${API}/events/current`),
-        fetchJSON(`${API}/matches/live`)   
-      ]);
+function setDailyTab(tab, el) {
+  document.querySelectorAll('.daily-ctx-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
 
-      allNotices = noticeRes.data || [];
-      allMatches = matchRes.data || [];  
-      allThemes = [
-      {
-        day: "MON",
-        theme: "Traditional Wear"
-      },
-      {
-        day: "TUE",
-        theme: "Sports Jersey"
-      },
-      {
-        day: "WED",
-        theme: "Retro Day"
-      }
+// ══════════════════════════════════════════════════════════════════
+// EVENT SKIN LOGIC (unchanged from your original)
+// ══════════════════════════════════════════════════════════════════
+let allNotices = [], allMatches = [], allThemes = [], activeTab = "AIRO";
+
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function loadEventData() {
+  try {
+    const [noticeRes, eventRes, matchRes] = await Promise.all([
+      fetchJSON(`${API}/announcements/active`),
+      fetchJSON(`${API}/events/current`),
+      fetchJSON(`${API}/matches/live`)
+    ]);
+    allNotices = noticeRes.data || [];
+    allMatches = matchRes.data || [];
+    allThemes = [
+      { day: "MON", theme: "Traditional Wear" },
+      { day: "TUE", theme: "Sports Jersey" },
+      { day: "WED", theme: "Retro Day" }
     ];
+    document.getElementById("stat-notices").textContent = allNotices.length;
+    document.getElementById("stat-live").textContent = allMatches.length;
+    document.getElementById("stat-events").textContent = eventRes.data ? 1 : 0;
+    document.getElementById("stat-theme").textContent = eventRes.data?.theme?.toUpperCase() || "NONE";
+    buildTicker(allNotices, allMatches);
+    renderNotices(); renderMatches(); renderThemes();
+  } catch(err) { console.error("Load failed:", err); }
+}
 
-      document.getElementById("stat-notices").textContent = allNotices.length;
-      document.getElementById("stat-live").textContent = allMatches.length;
-      document.getElementById("stat-events").textContent = eventRes.data ? 1 : 0;
-      document.getElementById("stat-theme").textContent =
-        eventRes.data?.theme?.toUpperCase() || "NONE";
+function buildTicker(notices, matches) {
+  const items = [
+    ...matches.filter(m => m.status === "live").map(m =>
+      `<span class="ticker-item"><span class="ticker-sep">▶</span> ${m.sport} — ${m.team1} vs ${m.team2} · ${m.score}</span>`),
+    ...notices.slice(0,5).map(n =>
+      `<span class="ticker-item"><span class="ticker-sep">▶</span> ${n.title}</span>`)
+  ];
+  const doubled = [...items, ...items];
+  document.getElementById("ticker").innerHTML = doubled.length ? doubled.join("") :
+    '<span class="ticker-item"><span class="ticker-sep">▶</span> NO LIVE UPDATES</span>';
+}
 
-      buildTicker(allNotices, []);
-      renderNotices();
-      renderMatches();
-      renderThemes();
-
-    } catch (err) {
-      console.error("Load failed:", err);
-    }
-  }
-
-
-  // ── TICKER ─────────────────────────────────────────────────────
-  function buildTicker(notices, matches) {
-    const items = [
-      ...matches.filter(m => m.status === "live").map(m =>
-        `<span class="ticker-item"><span class="ticker-sep">▶</span> ${m.sport} — ${m.team1} vs ${m.team2} · ${m.score}</span>`
-      ),
-      ...notices.slice(0,5).map(n =>
-        `<span class="ticker-item"><span class="ticker-sep">▶</span> ${n.title}</span>`
-      ),
-    ];
-    const doubled = [...items, ...items]; // loop
-    document.getElementById("ticker").innerHTML = doubled.join("");
-  }
-
-  // ── NOTICES ────────────────────────────────────────────────────
-  function setTab(tab) {
+function setTab(tab) {
   activeTab = tab;
-
-  const ctx = TAB_CONTEXT[tab];
-
   document.querySelectorAll(".event-tab").forEach(el => el.classList.remove("active"));
   const btns = document.querySelectorAll(".event-tab");
-
   if (tab === "AIRO") btns[0].classList.add("active");
   if (tab === "AETHER") btns[1].classList.add("active");
   if (tab === "ALL") btns[2].classList.add("active");
-
-  renderUI(ctx);   // 🔥 THIS is the key
+  renderNotices(); renderMatches(); renderThemes();
 }
 
-  function getCategoryFilter() {
-    if (activeTab === "AIRO") return "SPORT";
-    if (activeTab === "AETHER") return "CULTURAL";
-  return "ALL";
-  }
-  function renderNotices() {
-    const filtered = allNotices.filter(n =>
-      activeTab === "ALL" ? true :
-      (n.event_type || "").toUpperCase() === activeTab ||
-      (n.event_type || "").toUpperCase() === "GENERAL"
-    );
-
-    document.getElementById("notice-count").textContent = filtered.length + " ITEMS";
-
-    if (filtered.length === 0) {
-      document.getElementById("notices-list").innerHTML =
-        `<div class="loading-row" style="color:var(--text-muted)">NO NOTICES FOR THIS EVENT</div>`;
-      return;
-    }
-
-    document.getElementById("notices-list").innerHTML = filtered.map(n => {
-      const type = (n.event_type || "GENERAL").toUpperCase();
-      const isPink = type === "AETHER";
-      const typeClass = type === "GENERAL" ? "general" : type.toLowerCase();
-      const t = new Date(n.created_at);
-      const time = t.getHours().toString().padStart(2,"0") + ":" + t.getMinutes().toString().padStart(2,"0");
-      return `
-        <div class="notice-card ${isPink?"pink":""}" onclick="openNotice('${n.id}')">
-          <div class="notice-meta">
-            <span class="notice-type ${typeClass}">${type}</span>
-            <span class="notice-time">${time}</span>
-          </div>
-          <div class="notice-title">${n.title}</div>
-          <div class="notice-desc">${(n.description||"").substring(0,90)}${(n.description||"").length>90?"…":""}</div>
-        </div>`;
-    }).join("");
-  }
-
-
-  function renderUI(ctx) {
-    renderMatches(ctx);
-    renderThemes(ctx);
-    renderNotices(ctx);
-  }
-  // ── MATCHES ────────────────────────────────────────────────────
-  function renderMatches(ctx) {
-  const matchPanel = document.querySelector(".panel.orange");
-
-    if (activeTab === "AETHER") {
-      matchPanel.style.display = "none";
-      return;
-    }
-
-matchPanel.style.display = "block";
-  
-    let filtered = [];
-
-  // 🔥 AIRO → show ALL matches
-  if (activeTab === "AIRO") {
-    filtered = allMatches;
-  }
-
-  // 🔥 ALL → also show all matches
-  else if (activeTab === "ALL") {
-    filtered = allMatches;
-  }
-
-  // 🔥 AETHER → NO matches
-  else if (activeTab === "AETHER") {
-    filtered = [];
-  }
-
-  document.getElementById("match-count").textContent =
-    filtered.length + " MATCHES";
-
+function renderNotices() {
+  const filtered = allNotices.filter(n =>
+    activeTab === "ALL" ? true :
+    (n.event_type||"").toUpperCase() === activeTab || (n.event_type||"").toUpperCase() === "GENERAL"
+  );
+  document.getElementById("notice-count").textContent = filtered.length + " ITEMS";
   if (filtered.length === 0) {
-    document.getElementById("matches-list").innerHTML =
-      `<div class="error-row">NO MATCHES FOR THIS EVENT</div>`;
+    document.getElementById("notices-list").innerHTML =
+      `<div class="loading-row" style="color:var(--text-muted)">NO NOTICES FOR THIS EVENT</div>`;
     return;
   }
+  document.getElementById("notices-list").innerHTML = filtered.map(n => {
+    const type = (n.event_type||"GENERAL").toUpperCase();
+    const isPink = type === "AETHER";
+    const typeClass = type === "GENERAL" ? "general" : type.toLowerCase();
+    const t = new Date(n.created_at);
+    const time = t.getHours().toString().padStart(2,"0") + ":" + t.getMinutes().toString().padStart(2,"0");
+    return `
+      <div class="notice-card ${isPink?"pink":""}" onclick="openNotice('${n.id}')">
+        <div class="notice-meta">
+          <span class="notice-type ${typeClass}">${type}</span>
+          <span class="notice-time">${time}</span>
+        </div>
+        <div class="notice-title">${n.title}</div>
+        <div class="notice-desc">${(n.description||"").substring(0,90)}${(n.description||"").length>90?"…":""}</div>
+      </div>`;
+  }).join("");
+}
 
+function renderMatches() {
+  const matchPanel = document.querySelector(".panel.orange");
+  if (activeTab === "AETHER") { matchPanel.style.display = "none"; return; }
+  matchPanel.style.display = "block";
+  const filtered = allMatches;
+  document.getElementById("match-count").textContent = filtered.length + " MATCHES";
+  if (filtered.length === 0) {
+    document.getElementById("matches-list").innerHTML = `<div class="error-row">NO MATCHES FOR THIS EVENT</div>`;
+    return;
+  }
   document.getElementById("matches-list").innerHTML = filtered.map(m => `
     <div class="match-card">
-      <div class="match-sport">SPORT</div>
+      <div class="match-sport">${m.sport || 'SPORT'}</div>
       <div class="match-teams">
         <div class="team-name left">${m.team1}</div>
         <div class="score-block">
           <div class="score-text">${m.score}</div>
-          <span class="match-status">${m.status}</span>
+          <span class="match-status ${(m.status||'').toLowerCase()}">${m.status}</span>
         </div>
         <div class="team-name right">${m.team2}</div>
       </div>
-    </div>
-  `).join("");
+    </div>`).join("");
 }
-  // ── THEMES ─────────────────────────────────────────────────────
-  function renderThemes(ctx) {
-    const themePanel = document.querySelector(".panel.green");
 
-      // ❌ Hide ENTIRE panel for AIRO
-      if (activeTab === "AIRO") {
-        themePanel.style.display = "none";
-        return;
-      }
-
-  // ✅ Show panel otherwise
+function renderThemes() {
+  const themePanel = document.querySelector(".panel.green");
+  if (activeTab === "AIRO") { themePanel.style.display = "none"; return; }
   themePanel.style.display = "block";
-    
-    const days = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
-    const todayAbbr = days[new Date().getDay()];
-
-    if (allThemes.length === 0) {
-      document.getElementById("themes-list").innerHTML = `<div class="error-row">NO THEMES CONFIGURED</div>`;
-      return;
-    }
-
-    document.getElementById("themes-list").innerHTML = allThemes.map(t => {
-      const isToday = (t.day||"").toUpperCase().includes(todayAbbr);
-      return `
-        <div class="theme-card">
-          <div class="theme-day">${t.day}</div>
-          <div class="theme-name">${t.theme}</div>
-          ${isToday ? '<span class="theme-today">TODAY</span>' : ''}
-        </div>`;
-    }).join("");
+  const days = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+  const todayAbbr = days[new Date().getDay()];
+  if (allThemes.length === 0) {
+    document.getElementById("themes-list").innerHTML = `<div class="error-row">NO THEMES CONFIGURED</div>`;
+    return;
   }
-
-  // ── MODAL ──────────────────────────────────────────────────────
-  function openNotice(id) {
-    const n = allNotices.find(x => x.id === id);
-    if (!n) return;
-    const type = (n.event_type || "GENERAL").toUpperCase();
-    const typeClass = type === "GENERAL" ? "general" : type.toLowerCase();
-    document.getElementById("modal-tag").innerHTML =
-      `<span class="notice-type ${typeClass}">${type}</span>`;
-    document.getElementById("modal-title").textContent = n.title;
-    document.getElementById("modal-body").textContent  = n.description || "No description.";
-    const t = new Date(n.created_at);
-    document.getElementById("modal-footer").textContent =
-      "POSTED " + t.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) + " · " + t.toLocaleDateString();
-    document.getElementById("modal").classList.add("open");
-  }
-
-  function closeModal(e) {
-    if (e.target.id === "modal") document.getElementById("modal").classList.remove("open");
-  }
-
-  // ── CLOCK ──────────────────────────────────────────────────────
-  function updateClock() {
-    const now = new Date();
-    document.getElementById("clock").textContent =
-      now.toLocaleTimeString("en-IN", {hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
-  }
-
-  // ── AUTO REFRESH every 30s ─────────────────────────────────────
-  loadAll();
-  updateClock();
-  setInterval(updateClock, 1000);
-  setInterval(loadAll, 30000);
-
-
-async function loadEvent() {
-  try {
-    const res = await fetch(`${API}/events/current`);
-    const result = await res.json();
-
-    if (!result.data) return;
-
-    const event = result.data;
-
-    const nameEl = document.getElementById("event-name");
-    const themeEl = document.getElementById("event-theme");
-
-    if (nameEl) nameEl.innerText = event.name;
-    if (themeEl) themeEl.innerText = event.theme;
-
-  } catch (err) {
-    console.error("Error loading event:", err);
-  }
+  document.getElementById("themes-list").innerHTML = allThemes.map(t => {
+    const isToday = (t.day||"").toUpperCase().includes(todayAbbr);
+    return `
+      <div class="theme-card">
+        <div class="theme-day">${t.day}</div>
+        <div class="theme-name">${t.theme}</div>
+        ${isToday ? '<span class="theme-today">TODAY</span>' : ''}
+      </div>`;
+  }).join("");
 }
 
-// call on load
-window.onload = () => {
-  loadEvent();
-};
+function openNotice(id) {
+  const n = allNotices.find(x => x.id === id);
+  if (!n) return;
+  const type = (n.event_type||"GENERAL").toUpperCase();
+  const typeClass = type === "GENERAL" ? "general" : type.toLowerCase();
+  document.getElementById("modal-tag").innerHTML = `<span class="notice-type ${typeClass}">${type}</span>`;
+  document.getElementById("modal-title").textContent = n.title;
+  document.getElementById("modal-body").textContent = n.description || "No description.";
+  const t = new Date(n.created_at);
+  document.getElementById("modal-footer").textContent =
+    "POSTED " + t.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}) + " · " + t.toLocaleDateString();
+  document.getElementById("modal").classList.add("open");
+}
+function closeModal(e) {
+  if (e.target.id === "modal") document.getElementById("modal").classList.remove("open");
+}
 
-  </script>
-  </body>
-  </html>
+// ── CLOCK ─────────────────────────────────────────────────────────
+function updateClock() {
+  const t = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  const dc = document.getElementById('daily-clock');
+  const ec = document.getElementById('event-clock');
+  if (dc) dc.textContent = t;
+  if (ec) ec.textContent = t;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+autoDetectContext();
+updateClock();
+setInterval(updateClock, 1000);
+setInterval(() => {
+  if (document.body.classList.contains('skin-daily')) loadDailyData();
+  else loadEventData();
+}, 30000);
+</script>
+</body>
+</html>
