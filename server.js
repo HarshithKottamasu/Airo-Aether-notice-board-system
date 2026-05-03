@@ -126,6 +126,29 @@ app.get("/announcements/active", async (req, res) => {
 
 /* ================== ROUTES END HERE ================== */
 
+
+// GET LIVE MATCHES (dummy data)
+app.get("/matches/live", (req, res) => {
+  res.json({
+    success: true,
+    data: [
+      {
+        team1: "MU-A",
+        team2: "BITS Hyderabad",
+        score: "MU - 179/3 (15.4 overs)",
+        status: "Live"
+      },
+      {
+        team1: "Gitam",
+        team2: "MU-B",
+        score: "Gitam 123/5 (12.5 overs)",
+        status: "Live"
+      }
+    ]
+  });
+});
+
+
 app.listen(7000, () => {
   console.log("Server running on port 7000");
 });
