@@ -128,6 +128,7 @@ app.get("/announcements/active", async (req, res) => {
 
 
 // GET LIVE MATCHES (dummy data)
+// GET LIVE MATCHES (dummy data)
 app.get("/matches/live", (req, res) => {
   res.json({
     success: true,
@@ -149,6 +150,9 @@ app.get("/matches/live", (req, res) => {
 });
 
 
-app.listen(7000, () => {
-  console.log("Server running on port 7000");
+// IMPORTANT: use Railway PORT
+const PORT = process.env.PORT || 7000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
