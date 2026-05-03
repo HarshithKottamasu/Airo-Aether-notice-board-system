@@ -9,7 +9,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── SHARED ───────────────────────────────────────────── */
-body { min-height: 100vh; overflow-x: hidden; transition: background 0.4s, color 0.4s; }
+body { min-height: 100vh; overflow-x: hidden; transition: background 0.5s, color 0.5s; }
+.shell-wrap { opacity: 0; transition: opacity 0.35s ease; pointer-events: none; position: absolute; width: 100%; top: 0; left: 0; }
+.shell-wrap.shell-active { opacity: 1; pointer-events: auto; position: relative; }
 
 /* ══════════════════════════════════════════════════════════
    DAILY SKIN
@@ -132,7 +134,7 @@ body.skin-daily {
    EXAM SKIN
 ══════════════════════════════════════════════════════════ */
 body.skin-exam { background: #0d0d0d; color: #cccccc; font-family: 'Inter', sans-serif; }
-body.skin-daily #exam-shell, body.skin-event #exam-shell { display: none !important; }
+body.skin-daily #exam-shell, body.skin-event #exam-shell { /* handled by shell-wrap */ }
 
 .exam-content { padding: 16px 28px 28px; }
 .exam-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
@@ -199,13 +201,7 @@ body.skin-event .scanlines { display: block; }
   --border-glow: rgba(0,245,255,0.2); --text-primary: #e8f4f8; --text-muted: #6a8a9a;
 }
 
-/* hide daily elements in event skin */
-body.skin-event .daily-topbar,
-body.skin-event .daily-banner,
-body.skin-event .daily-grid { display: none; }
-
-/* hide event elements in daily skin */
-body.skin-daily .event-shell { display: none; }
+/* hide daily elements in event skin — handled by shell-wrap now */
 
 .event-shell { position: relative; z-index: 1; }
 
@@ -323,9 +319,9 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
 <!-- ══════════════════════════════════════════════
      DAILY SKIN MARKUP
 ══════════════════════════════════════════════ -->
-<div id="daily-shell">
+<div id="daily-shell" class="shell-wrap shell-active">
   <div class="daily-topbar">
-    <div class="daily-brand"><img class="daily-brand-logo" src="data:image/png;base64,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" alt="MU Logo"> Mahindra University <span>· Notice Board</span></div>
+    <div class="daily-brand"><img class="daily-brand-logo" src="data:image/png;base64,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" alt="MU Logo"> Mahindra University <span>· Notice Board</span></div>
     <div style="display:flex;align-items:center;gap:14px;">
       <div class="daily-ctx-tabs">
         <button class="daily-ctx-tab active" id="tab-daily" onclick="switchToDaily()">Daily</button>
@@ -416,9 +412,9 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
 <!-- ══════════════════════════════════════════════
      EXAM SKIN MARKUP
 ══════════════════════════════════════════════ -->
-<div id="exam-shell" style="display:none;">
+<div id="exam-shell" class="shell-wrap">
   <div class="daily-topbar">
-    <div class="daily-brand"><img class="daily-brand-logo" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAA7ADsDASIAAhEBAxEB/8QAHAAAAwEBAQADAAAAAAAAAAAAAAcIBgEFAgME/8QAQhAAAQMCAwQGBQQTAAAAAAAAAQIDBAAFBgcRCBIhMRM1QXFzshQzN2FiY3WBgoSUobGztNL/xAAbAQACAgMBAAAAAAAAAAAAAAACBAMGAQUHAP/EADMRAAEDAgQDAwsFAAAAAAAAAAEAAgMEEQUGITESQVEHgbETFCMyMzVCcYKRwmFyoeHw/9oADAMBAAIRAxEAPwCy6xmJMz8F4dvUiz3a6qYmx93pGxHcVpvJCpxA05KFbOo32j/bPfv4f/WaqColMbbhWXK2DQYvWOgnJADSdLXvcDmD1VCfZqy5/Li/5V3/AJrZYbvluxFaW7panVuxHSdxam1I3tDpyUAajfKTBcnG2LWLelK0wmiHJjo/AbHZ3nkKtO3xI0CCxCiNJZjsIDbaEjQJSBoBQ08r5Bd2yZzTg+HYS5sNO5zpDqbkWA7gNT4fNfcohKSo8gNTS/dzmy8adW0u9rCkKKVD0V3mP3a3z/qV/CagG79bS/HX5jXqiZ0VrIsp5fpsZMonc4cNrWtzv1B6K0MM5m4NxHd27TaLoqRLdBKEFhadQBqeJGlbGo/2aPazA8J3ymrAoqeUyNuUnmjB4MJrBBCSQWg62vuegHRFR5tBxn5meN5ixmlOvOrjIbQkalRMdrQCrDpbWnAaZGdV/wAa3JoKbQphEBJ7VCO2FL/ZxA9+vzViojMgDR1UmVcUjwuomqJOTDYdTxNsP9yXp5OYIYwThNqIpCDcXwHJjo5lf0QfmHL6621FeZZb3Bu8u5RoTnSG3SPRn1Dlv7oUQO7XTvqZoDAGhaKpmnrZX1EmpOpPz0/oL0H/AFK/hNQDd+tpfjr8xq/n/Ur+E1AN362l+OvzGkq7Zq6F2cetUfT+SYOzR7WYHhO+U1YFR/s0e1mB4TvlNWBUlH7PvWr7QPebf2DxKKKK/Pc5se226RPlr3GI7anHFaa6JA1NNqjtaXEAblYnO/HTeCsJrWwsfKkwFqIn6J04rPuH99KyuyU64/g28PPLU44u5qUpSjqSS2jUmkJmfi+XjTFci7SCpLAO5GaP4tsch39p76fGyF9411/WR/xopFkvlJ9Nl0rEcDGE5ccHD0ji0u++g7vG6dEjhHcP5pqAbv1rL8dfmNX7J+53PhNQFdutZfjr8xrFd8KPs43qPp/JMjZfjOPZqRnUpJQzHdUsjs1ToP61XNJvZgwW7Y8PPYhuDJbl3IANJUOKWRy+s8aclT0rC2PVVvOddHWYo4xm4aA37b/ybIri0pWgoWkKSoaEEcCK7RTCqqn/ADWyHVJkvXbBpbQV/bLgLO6Cf0Z5DuNajZksN5w7hW6wb3bpEGR8oFSUvIKd4dGgapPIj3imxRULYGtfxhWCozLW1VB5lOeIaanfT9efivg+CphaUjUlJAFI7LjI1Ee8uXvFxbfV0pcYhIOqRx1BWe3uFPSijdG15BPJI0WLVVDFJFA7h47XPPS+x5briEpQhKEJCUpGgAGgArtFFGtav//Z" alt="MU Logo"> Mahindra University <span>· End Semester Examinations</span></div>
+    <div class="daily-brand"><img class="daily-brand-logo" src="data:image/png;base64,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" alt="MU Logo"> Mahindra University <span>· End Semester Examinations</span></div>
     <div style="display:flex;align-items:center;gap:14px;">
       <div class="daily-ctx-tabs">
         <button class="daily-ctx-tab" id="exam-tab-daily" onclick="switchToDaily()">Daily</button>
@@ -454,7 +450,7 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
 <!-- ══════════════════════════════════════════════
      EVENT / AIRO-AETHER SKIN MARKUP
 ══════════════════════════════════════════════ -->
-<div id="event-shell" class="event-shell" style="display:none;">
+<div id="event-shell" class="event-shell shell-wrap">
   <header>
     <div class="header-inner">
       <div>
@@ -538,28 +534,36 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
 const API = "https://airo-aether-notice-board-system-production.up.railway.app";
 
 // ── SKIN SWITCHING ────────────────────────────────────────────────
+function activateShell(id, skinClass, afterFn) {
+  const shells = ['daily-shell','exam-shell','event-shell'];
+  const current = shells.find(s => document.getElementById(s).classList.contains('shell-active'));
+  if (current) {
+    const el = document.getElementById(current);
+    el.classList.remove('shell-active');
+    setTimeout(() => {
+      document.body.className = skinClass;
+      const next = document.getElementById(id);
+      next.classList.add('shell-active');
+      if (afterFn) afterFn();
+    }, 320);
+  } else {
+    document.body.className = skinClass;
+    document.getElementById(id).classList.add('shell-active');
+    if (afterFn) afterFn();
+  }
+}
 function switchToDaily() {
-  document.body.className = 'skin-daily';
-  document.getElementById('event-shell').style.display = 'none';
-  document.getElementById('exam-shell').style.display = 'none';
-  document.getElementById('daily-shell').style.display = 'block';
-  document.querySelectorAll('#daily-shell .daily-ctx-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-daily').classList.add('active');
-  loadDailyData();
+  activateShell('daily-shell', 'skin-daily', () => {
+    document.querySelectorAll('#daily-shell .daily-ctx-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-daily').classList.add('active');
+    loadDailyData();
+  });
 }
 function switchToExam() {
-  document.body.className = 'skin-exam';
-  document.getElementById('daily-shell').style.display = 'none';
-  document.getElementById('event-shell').style.display = 'none';
-  document.getElementById('exam-shell').style.display = 'block';
-  renderExamTimetable();
+  activateShell('exam-shell', 'skin-exam', () => { renderExamTimetable(); });
 }
 function switchToEvent() {
-  document.body.className = 'skin-event';
-  document.getElementById('daily-shell').style.display = 'none';
-  document.getElementById('exam-shell').style.display = 'none';
-  document.getElementById('event-shell').style.display = 'block';
-  loadEventData();
+  activateShell('event-shell', 'skin-event', () => { loadEventData(); });
 }
 
 // ── EXAM TIMETABLE ────────────────────────────────────────────────
