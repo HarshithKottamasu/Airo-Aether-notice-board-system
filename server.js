@@ -42,6 +42,11 @@ try {
 
 // ================== ROUTES ==================
 
+app.get("/", (req, res) => {
+  res.status(200).send("OK");
+});
+
+
 // HEALTH CHECK
 app.get("/health", (req, res) => {
   res.send("OK");
@@ -167,7 +172,8 @@ app.get("/matches/live", (req, res) => {
 // ================== SERVER ==================
 
 const PORT = process.env.PORT || 7000;
+const HOST = "0.0.0.0";
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server running on http://${HOST}:${PORT}`);
 });
