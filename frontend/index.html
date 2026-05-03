@@ -129,6 +129,45 @@ body.skin-daily {
 
 
 /* ══════════════════════════════════════════════════════════
+   EXAM SKIN
+══════════════════════════════════════════════════════════ */
+body.skin-exam { background: #0d0d0d; color: #cccccc; font-family: 'Inter', sans-serif; }
+body.skin-daily #exam-shell, body.skin-event #exam-shell { display: none !important; }
+
+.exam-content { padding: 16px 28px 28px; }
+.exam-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.exam-section-title { font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: #c0392b; }
+.exam-countdown { background: #1a0a0a; border: 0.5px solid #3d1515; border-radius: 8px; padding: 8px 14px; }
+.exam-cd-label { font-size: 10px; color: #a05050; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.exam-cd-row { display: flex; align-items: baseline; gap: 4px; }
+.exam-cd-val { font-size: 20px; font-weight: 500; color: #e07070; line-height: 1; }
+.exam-cd-unit { font-size: 10px; color: #a05050; }
+.exam-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.exam-sum-card { background: #141414; border: 0.5px solid #1f1f1f; border-radius: 8px; padding: 10px 14px; }
+.exam-sum-val { font-size: 22px; font-weight: 500; color: #ffffff; }
+.exam-sum-lbl { font-size: 10px; color: #3a3a3a; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
+.exam-list { display: flex; flex-direction: column; gap: 6px; }
+.exam-section-lbl { font-size: 10px; color: #2a2a2a; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 500; margin: 10px 0 4px; }
+.exam-row { background: #141414; border: 0.5px solid #1f1f1f; border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+.exam-row.is-today { border-color: #c0392b; background: #180a0a; }
+.exam-row.is-done { opacity: 0.38; }
+.exam-date-block { min-width: 44px; text-align: center; flex-shrink: 0; }
+.exam-date-num { font-size: 20px; font-weight: 500; color: #ffffff; line-height: 1; }
+.exam-date-mon { font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 1px; }
+.exam-date-dow { font-size: 10px; color: #555; margin-top: 1px; }
+.exam-vdivider { width: 0.5px; height: 36px; background: #1f1f1f; flex-shrink: 0; }
+.exam-row.is-today .exam-vdivider { background: #3d1515; }
+.exam-info { flex: 1; min-width: 0; }
+.exam-name { font-size: 13px; font-weight: 500; color: #cccccc; }
+.exam-row.is-today .exam-name { color: #ffffff; }
+.exam-time-str { font-size: 11px; color: #444; margin-top: 2px; }
+.exam-pill { font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.epill-done { background: #1a1a1a; color: #444; }
+.epill-today { background: #3d1010; color: #e07070; }
+.epill-next { background: #1a1a0a; color: #c09040; border: 0.5px solid #3a3000; }
+.epill-upcoming { background: #111; color: #555; border: 0.5px solid #222; }
+
+/* ══════════════════════════════════════════════════════════
    AIRO-AETHER SKIN  (everything from your original)
 ══════════════════════════════════════════════════════════ */
 body.skin-event {
@@ -289,9 +328,9 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
     <div class="daily-brand"><img class="daily-brand-logo" src="data:image/png;base64,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" alt="MU Logo"> Mahindra University <span>· Notice Board</span></div>
     <div style="display:flex;align-items:center;gap:14px;">
       <div class="daily-ctx-tabs">
-        <button class="daily-ctx-tab active" onclick="setDailyTab('Daily',this)">Daily</button>
-        <button class="daily-ctx-tab" onclick="setDailyTab('Exam',this)">Exam</button>
-        <button class="daily-ctx-tab" onclick="switchToEvent()">Event</button>
+        <button class="daily-ctx-tab active" id="tab-daily" onclick="switchToDaily()">Daily</button>
+        <button class="daily-ctx-tab" id="tab-exam" onclick="switchToExam()">Exam</button>
+        <button class="daily-ctx-tab" id="tab-event" onclick="switchToEvent()">Event</button>
       </div>
       <span id="daily-clock" class="daily-clock"></span>
     </div>
@@ -371,6 +410,44 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     EXAM SKIN MARKUP
+══════════════════════════════════════════════ -->
+<div id="exam-shell" style="display:none;">
+  <div class="daily-topbar">
+    <div class="daily-brand"><img class="daily-brand-logo" src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAA7ADsDASIAAhEBAxEB/8QAHAAAAwEBAQADAAAAAAAAAAAAAAcIBgEFAgME/8QAQhAAAQMCAwQGBQQTAAAAAAAAAQIDBAAFBgcRCBIhMRM1QXFzshQzN2FiY3WBgoSUobGztNL/xAAbAQACAgMBAAAAAAAAAAAAAAACBAMGAQUHAP/EADMRAAEDAgQDAwsFAAAAAAAAAAEAAgMEEQUGITESQVEHgbETFCMyMzVCcYKRwmFyoeHw/9oADAMBAAIRAxEAPwCy6xmJMz8F4dvUiz3a6qYmx93pGxHcVpvJCpxA05KFbOo32j/bPfv4f/WaqColMbbhWXK2DQYvWOgnJADSdLXvcDmD1VCfZqy5/Li/5V3/AJrZYbvluxFaW7panVuxHSdxam1I3tDpyUAajfKTBcnG2LWLelK0wmiHJjo/AbHZ3nkKtO3xI0CCxCiNJZjsIDbaEjQJSBoBQ08r5Bd2yZzTg+HYS5sNO5zpDqbkWA7gNT4fNfcohKSo8gNTS/dzmy8adW0u9rCkKKVD0V3mP3a3z/qV/CagG79bS/HX5jXqiZ0VrIsp5fpsZMonc4cNrWtzv1B6K0MM5m4NxHd27TaLoqRLdBKEFhadQBqeJGlbGo/2aPazA8J3ymrAoqeUyNuUnmjB4MJrBBCSQWg62vuegHRFR5tBxn5meN5ixmlOvOrjIbQkalRMdrQCrDpbWnAaZGdV/wAa3JoKbQphEBJ7VCO2FL/ZxA9+vzViojMgDR1UmVcUjwuomqJOTDYdTxNsP9yXp5OYIYwThNqIpCDcXwHJjo5lf0QfmHL6621FeZZb3Bu8u5RoTnSG3SPRn1Dlv7oUQO7XTvqZoDAGhaKpmnrZX1EmpOpPz0/oL0H/AFK/hNQDd+tpfjr8xq/n/Ur+E1AN362l+OvzGkq7Zq6F2cetUfT+SYOzR7WYHhO+U1YFR/s0e1mB4TvlNWBUlH7PvWr7QPebf2DxKKKK/Pc5se226RPlr3GI7anHFaa6JA1NNqjtaXEAblYnO/HTeCsJrWwsfKkwFqIn6J04rPuH99KyuyU64/g28PPLU44u5qUpSjqSS2jUmkJmfi+XjTFci7SCpLAO5GaP4tsch39p76fGyF9411/WR/xopFkvlJ9Nl0rEcDGE5ccHD0ji0u++g7vG6dEjhHcP5pqAbv1rL8dfmNX7J+53PhNQFdutZfjr8xrFd8KPs43qPp/JMjZfjOPZqRnUpJQzHdUsjs1ToP61XNJvZgwW7Y8PPYhuDJbl3IANJUOKWRy+s8aclT0rC2PVVvOddHWYo4xm4aA37b/ybIri0pWgoWkKSoaEEcCK7RTCqqn/ADWyHVJkvXbBpbQV/bLgLO6Cf0Z5DuNajZksN5w7hW6wb3bpEGR8oFSUvIKd4dGgapPIj3imxRULYGtfxhWCozLW1VB5lOeIaanfT9efivg+CphaUjUlJAFI7LjI1Ee8uXvFxbfV0pcYhIOqRx1BWe3uFPSijdG15BPJI0WLVVDFJFA7h47XPPS+x5briEpQhKEJCUpGgAGgArtFFGtav//Z" alt="MU Logo"> Mahindra University <span>· End Semester Examinations</span></div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="daily-ctx-tabs">
+        <button class="daily-ctx-tab" id="exam-tab-daily" onclick="switchToDaily()">Daily</button>
+        <button class="daily-ctx-tab active" id="exam-tab-exam">Exam</button>
+        <button class="daily-ctx-tab" id="exam-tab-event" onclick="switchToEvent()">Event</button>
+      </div>
+      <span id="exam-clock" class="daily-clock"></span>
+    </div>
+  </div>
+
+  <div class="exam-content">
+    <div class="exam-header-row">
+      <div class="exam-section-title">End Semester Timetable — May 2026</div>
+      <div class="exam-countdown">
+        <div class="exam-cd-label">Next exam in</div>
+        <div class="exam-cd-row">
+          <span class="exam-cd-val" id="exam-cd-days">--</span>
+          <span class="exam-cd-unit">days</span>
+          <span class="exam-cd-val" id="exam-cd-hrs" style="margin-left:8px;">--</span>
+          <span class="exam-cd-unit">hrs</span>
+        </div>
+      </div>
+    </div>
+    <div class="exam-summary">
+      <div class="exam-sum-card"><div class="exam-sum-val">10</div><div class="exam-sum-lbl">Total exams</div></div>
+      <div class="exam-sum-card"><div class="exam-sum-val" id="exam-s-done" style="color:#444;">0</div><div class="exam-sum-lbl">Completed</div></div>
+      <div class="exam-sum-card"><div class="exam-sum-val" id="exam-s-left" style="color:#e07070;">10</div><div class="exam-sum-lbl">Remaining</div></div>
+    </div>
+    <div class="exam-list" id="exam-list"></div>
   </div>
 </div>
 
@@ -461,16 +538,98 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
 const API = "https://airo-aether-notice-board-system-production.up.railway.app";
 
 // ── SKIN SWITCHING ────────────────────────────────────────────────
-function switchToEvent() {
-  document.body.className = 'skin-event';
-  document.getElementById('daily-shell').style.display = 'none';
-  document.getElementById('event-shell').style.display = 'block';
-  loadEventData();
-}
 function switchToDaily() {
   document.body.className = 'skin-daily';
   document.getElementById('event-shell').style.display = 'none';
+  document.getElementById('exam-shell').style.display = 'none';
   document.getElementById('daily-shell').style.display = 'block';
+  document.querySelectorAll('#daily-shell .daily-ctx-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-daily').classList.add('active');
+  loadDailyData();
+}
+function switchToExam() {
+  document.body.className = 'skin-exam';
+  document.getElementById('daily-shell').style.display = 'none';
+  document.getElementById('event-shell').style.display = 'none';
+  document.getElementById('exam-shell').style.display = 'block';
+  renderExamTimetable();
+}
+function switchToEvent() {
+  document.body.className = 'skin-event';
+  document.getElementById('daily-shell').style.display = 'none';
+  document.getElementById('exam-shell').style.display = 'none';
+  document.getElementById('event-shell').style.display = 'block';
+  loadEventData();
+}
+
+// ── EXAM TIMETABLE ────────────────────────────────────────────────
+const EXAM_DATA = [
+  {date:'2026-05-19',dow:'Tue',subject:'Software Engineering'},
+  {date:'2026-05-20',dow:'Wed',subject:'Big Data Analytics'},
+  {date:'2026-05-21',dow:'Thu',subject:'Computer Networks'},
+  {date:'2026-05-22',dow:'Fri',subject:'Deep Neural Networks'},
+  {date:'2026-05-23',dow:'Sat',subject:'Elective 1'},
+  {date:'2026-05-25',dow:'Mon',subject:'Elective 2'},
+  {date:'2026-05-26',dow:'Tue',subject:'Elective 3'},
+  {date:'2026-05-27',dow:'Wed',subject:'Elective 4'},
+  {date:'2026-05-28',dow:'Thu',subject:'Elective 5'},
+  {date:'2026-05-29',dow:'Fri',subject:'Elective 6'},
+];
+const EXAM_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function renderExamTimetable() {
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  let done = 0, nextExam = null;
+  EXAM_DATA.forEach(e => {
+    if (new Date(e.date + 'T13:00:00') < now) done++;
+    else if (!nextExam) nextExam = new Date(e.date + 'T10:00:00');
+  });
+  document.getElementById('exam-s-done').textContent = done;
+  document.getElementById('exam-s-left').textContent = EXAM_DATA.length - done;
+  if (nextExam) {
+    const diff = nextExam - now;
+    document.getElementById('exam-cd-days').textContent = Math.max(0, Math.floor(diff / 86400000));
+    document.getElementById('exam-cd-hrs').textContent = Math.floor((diff % 86400000) / 3600000);
+  } else {
+    document.getElementById('exam-cd-days').textContent = '--';
+    document.getElementById('exam-cd-hrs').textContent = '--';
+  }
+  const firstUpcomingIdx = EXAM_DATA.findIndex(e => new Date(e.date + 'T13:00:00') >= now);
+  let prevSection = null;
+  document.getElementById('exam-list').innerHTML = EXAM_DATA.map((e, i) => {
+    const isDone = new Date(e.date + 'T13:00:00') < now;
+    const isToday = e.date === todayStr;
+    const diffDays = Math.ceil((new Date(e.date + 'T10:00:00') - now) / 86400000);
+    const section = isDone ? 'done' : (isToday ? 'today' : 'upcoming');
+    let sectionLabel = '';
+    if (section !== prevSection) {
+      if (section === 'done') sectionLabel = '<div class="exam-section-lbl">Completed</div>';
+      if (section === 'today') sectionLabel = '<div class="exam-section-lbl">Today</div>';
+      if (section === 'upcoming') sectionLabel = '<div class="exam-section-lbl">Upcoming</div>';
+      prevSection = section;
+    }
+    const d = new Date(e.date);
+    let pill;
+    if (isDone) pill = '<span class="exam-pill epill-done">Done</span>';
+    else if (isToday) pill = '<span class="exam-pill epill-today">Today</span>';
+    else if (i === firstUpcomingIdx) pill = '<span class="exam-pill epill-next">Next</span>';
+    else pill = `<span class="exam-pill epill-upcoming">In ${diffDays}d</span>`;
+    return `${sectionLabel}
+    <div class="exam-row ${isDone?'is-done':''} ${isToday?'is-today':''}">
+      <div class="exam-date-block">
+        <div class="exam-date-num">${d.getDate()}</div>
+        <div class="exam-date-mon">${EXAM_MONTHS[d.getMonth()]}</div>
+        <div class="exam-date-dow">${e.dow}</div>
+      </div>
+      <div class="exam-vdivider"></div>
+      <div class="exam-info">
+        <div class="exam-name">${e.subject}</div>
+        <div class="exam-time-str">10:00 AM – 01:00 PM</div>
+      </div>
+      ${pill}
+    </div>`;
+  }).join('');
 }
 
 // ── AUTO CONTEXT from /context/current ────────────────────────────
@@ -791,8 +950,10 @@ function updateClock() {
   const t = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
   const dc = document.getElementById('daily-clock');
   const ec = document.getElementById('event-clock');
+  const xc = document.getElementById('exam-clock');
   if (dc) dc.textContent = t;
   if (ec) ec.textContent = t;
+  if (xc) xc.textContent = t;
 }
 
 // ── INIT ──────────────────────────────────────────────────────────
