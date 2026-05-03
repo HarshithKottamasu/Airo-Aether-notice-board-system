@@ -138,12 +138,6 @@ app.get("/matches/live", (req, res) => {
         team2: "BITS Hyderabad",
         score: "MU - 179/3 (15.4 overs)",
         status: "Live"
-      },
-      {
-        team1: "Gitam",
-        team2: "MU-B",
-        score: "Gitam 123/5 (12.5 overs)",
-        status: "Live"
       }
     ]
   });
