@@ -442,6 +442,33 @@
   updateClock();
   setInterval(updateClock, 1000);
   setInterval(loadAll, 30000);
+
+
+  const API = "https://your-app.up.railway.app";
+
+async function loadEvent() {
+  try {
+    const res = await fetch(`${API}/events/current`);
+    const result = await res.json();
+
+    if (!result.data) return;
+
+    const event = result.data;
+
+    // 🔥 UPDATE UI HERE
+    document.getElementById("event-name").innerText = event.name;
+    document.getElementById("event-theme").innerText = event.theme;
+
+  } catch (err) {
+    console.error("Error loading event:", err);
+  }
+}
+
+// call on load
+window.onload = () => {
+  loadEvent();
+};
+
   </script>
   </body>
   </html>
