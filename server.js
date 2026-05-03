@@ -153,21 +153,39 @@ app.get("/matches/live", (req, res) => {
   res.json({
     success: true,
     data: [
-      {
-        team1: "MU-A",
-        team2: "BITS Hyderabad",
-        score: "MU - 179/3 (15.4 overs)",
-        status: "Live",
-        event_type: "AIRO"      // 🔥 ADD THIS
-      },
-      {
-        team1: "Gitam",
-        team2: "MU-B",
-        score: "Gitam 123/5 (12.5 overs)",
-        status: "Live",
-        event_type: "AETHER"    // 🔥 ADD THIS
-      }
-    ]
+    {
+      team1: "MU-A",
+      team2: "BITS Hyderabad",
+      score: "MU - 179/3 (15.4 overs)",
+      status: "Live",
+      event_type: "AIRO",
+      sport: "CRICKET"   // 🔥 NEW
+    },
+    {
+      team1: "Gitam",
+      team2: "MU-B",
+      score: "Gitam 123/5 (12.5 overs)",
+      status: "Live",
+      event_type: "AIRO",
+      sport: "CRICKET"
+    },
+    {
+      team1: "CSE",
+      team2: "ECE",
+      score: "2 - 1",
+      status: "Live",
+      event_type: "AIRO",
+      sport: "FOOTBALL"
+    },
+    {
+      team1: "MECH",
+      team2: "EEE",
+      score: "78 - 65",
+      status: "Live",
+      event_type: "AIRO",
+      sport: "BASKETBALL"
+    }
+  ]
   });
 });
 

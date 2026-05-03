@@ -290,7 +290,20 @@
 
       allNotices = noticeRes.data || [];
       allMatches = matchRes.data || [];  
-      allThemes = [];
+      allThemes = [
+      {
+        day: "MON",
+        theme: "Traditional Wear"
+      },
+      {
+        day: "TUE",
+        theme: "Sports Jersey"
+      },
+      {
+        day: "WED",
+        theme: "Retro Day"
+      }
+    ];
 
       document.getElementById("stat-notices").textContent = allNotices.length;
       document.getElementById("stat-live").textContent = allMatches.length;
@@ -335,9 +348,15 @@
   if (tab === "ALL") btns[2].classList.add("active");
 
   renderNotices();
-  renderMatches();   
-  }
+  renderMatches();
+  renderThemes();   // 🔥 THIS MUST BE HERE
+}
 
+  function getCategoryFilter() {
+    if (activeTab === "AIRO") return "SPORT";
+    if (activeTab === "AETHER") return "CULTURAL";
+  return "ALL";
+  }
   function renderNotices() {
     const filtered = allNotices.filter(n =>
       activeTab === "ALL" ? true :
@@ -360,7 +379,7 @@
       const t = new Date(n.created_at);
       const time = t.getHours().toString().padStart(2,"0") + ":" + t.getMinutes().toString().padStart(2,"0");
       return `
-        <div class="notice-card ${isPink?"pink":""}" onclick="openNotice(${n.id})">
+        <div class="notice-card ${isPink?"pink":""}" onclick="openNotice('${n.id}')">
           <div class="notice-meta">
             <span class="notice-type ${typeClass}">${type}</span>
             <span class="notice-time">${time}</span>
@@ -373,14 +392,34 @@
 
   // ── MATCHES ────────────────────────────────────────────────────
   function renderMatches() {
+  const matchPanel = document.querySelector(".panel.orange");
 
-  // 🔥 FILTER BASED ON TAB
-  const filtered = allMatches.filter(m => {
-    if (activeTab === "ALL") return true;
-    return (m.event_type || "").toUpperCase() === activeTab;
-  });
+    if (activeTab === "AETHER") {
+      matchPanel.style.display = "none";
+      return;
+    }
 
-  document.getElementById("match-count").textContent = filtered.length + " MATCHES";
+matchPanel.style.display = "block";
+  
+    let filtered = [];
+
+  // 🔥 AIRO → show ALL matches
+  if (activeTab === "AIRO") {
+    filtered = allMatches;
+  }
+
+  // 🔥 ALL → also show all matches
+  else if (activeTab === "ALL") {
+    filtered = allMatches;
+  }
+
+  // 🔥 AETHER → NO matches
+  else if (activeTab === "AETHER") {
+    filtered = [];
+  }
+
+  document.getElementById("match-count").textContent =
+    filtered.length + " MATCHES";
 
   if (filtered.length === 0) {
     document.getElementById("matches-list").innerHTML =
@@ -390,21 +429,31 @@
 
   document.getElementById("matches-list").innerHTML = filtered.map(m => `
     <div class="match-card">
-      <div class="match-sport">${m.sport || "SPORT"}</div>
+      <div class="match-sport">SPORT</div>
       <div class="match-teams">
         <div class="team-name left">${m.team1}</div>
         <div class="score-block">
           <div class="score-text">${m.score}</div>
-          <span class="match-status ${m.status.toLowerCase()}">${m.status}</span>
+          <span class="match-status">${m.status}</span>
         </div>
         <div class="team-name right">${m.team2}</div>
       </div>
     </div>
   `).join("");
 }
-
   // ── THEMES ─────────────────────────────────────────────────────
   function renderThemes() {
+    const themePanel = document.querySelector(".panel.green");
+
+      // ❌ Hide ENTIRE panel for AIRO
+      if (activeTab === "AIRO") {
+        themePanel.style.display = "none";
+        return;
+      }
+
+  // ✅ Show panel otherwise
+  themePanel.style.display = "block";
+    
     const days = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
     const todayAbbr = days[new Date().getDay()];
 
