@@ -170,17 +170,17 @@ app.get("/matches/live", (req, res) => {
       sport: "CRICKET"
     },
     {
-      team1: "CSE",
-      team2: "ECE",
+      team1: "MU-A",
+      team2: "MJCET",
       score: "2 - 1",
       status: "Live",
       event_type: "AIRO",
       sport: "FOOTBALL"
     },
     {
-      team1: "MECH",
-      team2: "EEE",
-      score: "78 - 65",
+      team1: "MU",
+      team2: "BITS Hyderabad",
+      score: "42-38",
       status: "Live",
       event_type: "AIRO",
       sport: "BASKETBALL"
