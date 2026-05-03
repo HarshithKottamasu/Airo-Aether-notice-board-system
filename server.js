@@ -127,8 +127,9 @@ app.get("/announcements/active", async (req, res) => {
 /* ================== ROUTES END HERE ================== */
 
 
-// GET LIVE MATCHES (dummy data)
-// GET LIVE MATCHES (dummy data)
+// ================== ROUTES ==================
+
+// LIVE MATCHES
 app.get("/matches/live", (req, res) => {
   res.json({
     success: true,
@@ -138,13 +139,20 @@ app.get("/matches/live", (req, res) => {
         team2: "BITS Hyderabad",
         score: "MU - 179/3 (15.4 overs)",
         status: "Live"
+      },
+      {
+        team1: "Gitam",
+        team2: "MU-B",
+        score: "Gitam 123/5 (12.5 overs)",
+        status: "Live"
       }
     ]
   });
 });
 
 
-// IMPORTANT: use Railway PORT
+// ================== SERVER ==================
+
 const PORT = process.env.PORT || 7000;
 
 app.listen(PORT, () => {
