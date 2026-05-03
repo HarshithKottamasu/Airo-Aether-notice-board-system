@@ -15,41 +15,42 @@ body { min-height: 100vh; overflow-x: hidden; transition: background 0.4s, color
    DAILY SKIN
 ══════════════════════════════════════════════════════════ */
 body.skin-daily {
-  background: #f5f4f1;
-  color: #1a1a1a;
+  background: #0d0d0d;
+  color: #cccccc;
   font-family: 'Inter', sans-serif;
 }
 
 /* topbar */
 .daily-topbar {
-  background: #ffffff;
-  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  background: #111111;
+  border-bottom: 0.5px solid #1f1f1f;
   padding: 13px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.daily-brand { font-size: 14px; font-weight: 500; color: #1a1a1a; }
-.daily-brand span { color: #999; font-weight: 400; }
+.daily-brand { font-size: 14px; font-weight: 500; color: #ffffff; display: flex; align-items: center; gap: 9px; }
+.daily-brand span { color: #444; font-weight: 400; }
+.daily-brand-logo { height: 26px; width: auto; display: block; }
 .daily-ctx-tabs { display: flex; gap: 3px; }
 .daily-ctx-tab {
   font-size: 12px; padding: 4px 11px; border-radius: 20px;
-  border: 0.5px solid rgba(0,0,0,0.12); background: transparent;
-  color: #777; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  border: 0.5px solid #2a2a2a; background: transparent;
+  color: #555; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
 }
-.daily-ctx-tab.active { background: #efefef; color: #1a1a1a; font-weight: 500; border-color: rgba(0,0,0,0.2); }
-.daily-clock { font-size: 12px; color: #aaa; min-width: 60px; text-align: right; }
+.daily-ctx-tab.active { background: #c0392b; color: #ffffff; font-weight: 500; border-color: #c0392b; }
+.daily-clock { font-size: 12px; color: #444; min-width: 60px; text-align: right; }
 
 /* event banner */
 .daily-banner {
   margin: 14px 28px 0;
-  background: #EAF3DE; border: 0.5px solid #C0DD97;
+  background: #1a0a0a; border: 0.5px solid #3d1515;
   border-radius: 10px; padding: 10px 16px;
   display: flex; align-items: center; justify-content: space-between;
 }
-.daily-banner-text { font-size: 12px; font-weight: 500; color: #27500A; }
-.daily-banner-sub { font-size: 11px; color: #3B6D11; margin-top: 1px; }
-.daily-banner-link { font-size: 11px; color: #3B6D11; cursor: pointer; }
+.daily-banner-text { font-size: 12px; font-weight: 500; color: #f08080; }
+.daily-banner-sub { font-size: 11px; color: #a05050; margin-top: 1px; }
+.daily-banner-link { font-size: 11px; color: #c0392b; cursor: pointer; }
 
 /* grid */
 .daily-grid {
@@ -59,68 +60,68 @@ body.skin-daily {
   padding: 14px 28px 28px;
 }
 .daily-card {
-  background: #ffffff;
-  border: 0.5px solid rgba(0,0,0,0.09);
+  background: #141414;
+  border: 0.5px solid #1f1f1f;
   border-radius: 12px;
   padding: 16px 18px;
 }
 .daily-lbl {
   font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
-  color: #bbb; text-transform: uppercase; margin-bottom: 12px;
+  color: #3a3a3a; text-transform: uppercase; margin-bottom: 12px;
 }
 
 /* weather card */
 .weather-card {
-  background: #E6F1FB;
-  border: 0.5px solid #B5D4F4;
+  background: #0f0f0f;
+  border: 0.5px solid #1f1f1f;
   border-radius: 12px;
   padding: 16px 18px;
 }
-.w-city { font-size: 13px; font-weight: 500; color: #0C447C; }
-.w-cond { font-size: 11px; color: #185FA5; margin-top: 1px; }
-.w-temp { font-size: 52px; font-weight: 300; color: #042C53; line-height: 1; margin: 8px 0 2px; }
+.w-city { font-size: 13px; font-weight: 500; color: #c0392b; }
+.w-cond { font-size: 11px; color: #555; margin-top: 1px; }
+.w-temp { font-size: 52px; font-weight: 300; color: #ffffff; line-height: 1; margin: 8px 0 2px; }
 .w-temp sup { font-size: 20px; font-weight: 400; vertical-align: super; line-height: 0; }
-.w-hl { font-size: 12px; color: #185FA5; margin-bottom: 12px; }
-.w-stats { display: flex; border-top: 0.5px solid #B5D4F4; padding-top: 10px; margin-bottom: 12px; }
-.w-stat { flex: 1; text-align: center; border-right: 0.5px solid #B5D4F4; }
+.w-hl { font-size: 12px; color: #555; margin-bottom: 12px; }
+.w-stats { display: flex; border-top: 0.5px solid #1f1f1f; padding-top: 10px; margin-bottom: 12px; }
+.w-stat { flex: 1; text-align: center; border-right: 0.5px solid #1f1f1f; }
 .w-stat:last-child { border-right: none; }
-.w-stat-val { font-size: 13px; font-weight: 500; color: #0C447C; }
-.w-stat-lbl { font-size: 10px; color: #185FA5; margin-top: 1px; }
+.w-stat-val { font-size: 13px; font-weight: 500; color: #cccccc; }
+.w-stat-lbl { font-size: 10px; color: #444; margin-top: 1px; }
 .hourly { display: flex; }
 .hour-item {
   flex: 1; display: flex; flex-direction: column; align-items: center;
-  gap: 4px; border-right: 0.5px solid #B5D4F4; padding: 6px 4px;
+  gap: 4px; border-right: 0.5px solid #1a1a1a; padding: 6px 4px;
 }
 .hour-item:last-child { border-right: none; }
-.h-time { font-size: 10px; color: #185FA5; }
-.h-temp { font-size: 12px; font-weight: 500; color: #0C447C; }
-.h-bar-wrap { width: 4px; height: 28px; background: #B5D4F4; border-radius: 2px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
-.h-bar { width: 100%; background: #185FA5; border-radius: 2px; }
+.h-time { font-size: 10px; color: #444; }
+.h-temp { font-size: 12px; font-weight: 500; color: #cccccc; }
+.h-bar-wrap { width: 4px; height: 28px; background: #1f1f1f; border-radius: 2px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+.h-bar { width: 100%; background: #c0392b; border-radius: 2px; }
 
 /* mess menu */
-.menu-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #f0f0f0; }
+.menu-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #1a1a1a; }
 .menu-row:last-child { border-bottom: none; padding-bottom: 0; }
 .meal-tag { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; white-space: nowrap; margin-top: 1px; min-width: 58px; text-align: center; }
-.meal-tag.breakfast { color: #185FA5; background: #E6F1FB; }
-.meal-tag.lunch { color: #3B6D11; background: #EAF3DE; }
-.meal-tag.snacks { color: #854F0B; background: #FAEEDA; }
-.meal-tag.dinner { color: #534AB7; background: #EEEDFE; }
-.meal-items { font-size: 12px; color: #333; line-height: 1.5; }
+.meal-tag.breakfast { color: #6090c0; background: #0f1a2a; }
+.meal-tag.lunch { color: #70b870; background: #0f1a0f; }
+.meal-tag.snacks { color: #c09040; background: #1a1400; }
+.meal-tag.dinner { color: #9080d0; background: #110f1a; }
+.meal-items { font-size: 12px; color: #888; line-height: 1.5; }
 
 /* notices */
-.daily-notice-item { padding: 7px 0; border-bottom: 0.5px solid #f0f0f0; }
+.daily-notice-item { padding: 7px 0; border-bottom: 0.5px solid #1a1a1a; }
 .daily-notice-item:last-child { border-bottom: none; padding-bottom: 0; }
-.daily-notice-title { font-size: 13px; color: #1a1a1a; line-height: 1.4; }
-.daily-notice-meta { font-size: 11px; color: #bbb; margin-top: 2px; }
+.daily-notice-title { font-size: 13px; color: #cccccc; line-height: 1.4; }
+.daily-notice-meta { font-size: 11px; color: #3a3a3a; margin-top: 2px; }
 .nbadge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; margin-right: 5px; vertical-align: middle; }
-.nb-red { background: #FCEBEB; color: #A32D2D; }
-.nb-blue { background: #E6F1FB; color: #185FA5; }
+.nb-red { background: #3d1010; color: #e07070; }
+.nb-blue { background: #0f1a2a; color: #6090c0; }
 
 /* upcoming */
-.upcoming-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid #f0f0f0; }
+.upcoming-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid #1a1a1a; }
 .upcoming-item:last-child { border-bottom: none; }
-.up-date { font-size: 11px; font-weight: 500; color: #185FA5; background: #E6F1FB; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
-.up-text { font-size: 12px; color: #333; }
+.up-date { font-size: 11px; font-weight: 500; color: #e05555; background: #1a0a0a; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.up-text { font-size: 12px; color: #888; }
 .stat-chips { display: flex; gap: 8px; }
 .stat-chip { flex: 1; border-radius: 8px; padding: 8px 10px; }
 .stat-chip-val { font-size: 20px; font-weight: 500; }
@@ -285,7 +286,7 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
 ══════════════════════════════════════════════ -->
 <div id="daily-shell">
   <div class="daily-topbar">
-    <div class="daily-brand">Mahindra University <span>· Notice Board</span></div>
+    <div class="daily-brand"><img class="daily-brand-logo" src="data:image/png;base64,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" alt="MU Logo"> Mahindra University <span>· Notice Board</span></div>
     <div style="display:flex;align-items:center;gap:14px;">
       <div class="daily-ctx-tabs">
         <button class="daily-ctx-tab active" onclick="setDailyTab('Daily',this)">Daily</button>
@@ -307,7 +308,7 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
   <div class="daily-grid">
     <!-- Weather -->
     <div class="weather-card">
-      <div class="daily-lbl" style="color:#185FA5;">Weather · Hyderabad</div>
+      <div class="daily-lbl" style="color:#c0392b;">Weather · Hyderabad</div>
       <div style="display:flex;align-items:flex-start;justify-content:space-between;">
         <div>
           <div class="w-city" id="w-city">Hyderabad</div>
@@ -328,7 +329,7 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
         <div class="w-stat"><div class="w-stat-val" id="w-aqi">--</div><div class="w-stat-lbl">AQI</div></div>
         <div class="w-stat"><div class="w-stat-val" id="w-rain">--%</div><div class="w-stat-lbl">Rain</div></div>
       </div>
-      <div class="daily-lbl" style="color:#185FA5;margin-bottom:6px;">Hourly</div>
+      <div class="daily-lbl" style="color:#c0392b;margin-bottom:6px;">Hourly</div>
       <div class="hourly" id="hourly-strip"></div>
     </div>
 
@@ -352,20 +353,20 @@ body.skin-event .container { position: relative; z-index: 1; max-width: 1200px; 
     <div class="daily-card">
       <div class="daily-lbl">Upcoming</div>
       <div id="upcoming-list"></div>
-      <div style="margin-top:12px;border-top:0.5px solid #f0f0f0;padding-top:10px;">
-        <div class="daily-lbl" style="margin-bottom:8px;">Quick stats</div>
+      <div style="margin-top:12px;border-top:0.5px solid #1f1f1f;padding-top:10px;">
+        <div class="daily-lbl" style="margin-bottom:8px;color:#3a3a3a;">Quick stats</div>
         <div class="stat-chips">
-          <div class="stat-chip" style="background:#f0f0f0;">
-            <div class="stat-chip-val" id="stat-notices-daily" style="color:#1a1a1a;">--</div>
-            <div class="stat-chip-lbl" style="color:#999;">Notices</div>
+          <div class="stat-chip" style="background:#1a1a1a;">
+            <div class="stat-chip-val" id="stat-notices-daily" style="color:#cccccc;">--</div>
+            <div class="stat-chip-lbl" style="color:#444;">Notices</div>
           </div>
-          <div class="stat-chip" style="background:#EAF3DE;">
-            <div class="stat-chip-val" id="stat-days-event" style="color:#27500A;">--</div>
-            <div class="stat-chip-lbl" style="color:#3B6D11;">To event</div>
+          <div class="stat-chip" style="background:#1a0a0a;">
+            <div class="stat-chip-val" id="stat-days-event" style="color:#e07070;">--</div>
+            <div class="stat-chip-lbl" style="color:#a05050;">To event</div>
           </div>
-          <div class="stat-chip" style="background:#FAEEDA;">
-            <div class="stat-chip-val" id="stat-days-exam" style="color:#633806;">--</div>
-            <div class="stat-chip-lbl" style="color:#854F0B;">To exams</div>
+          <div class="stat-chip" style="background:#1a1400;">
+            <div class="stat-chip-val" id="stat-days-exam" style="color:#c09040;">--</div>
+            <div class="stat-chip-lbl" style="color:#806020;">To exams</div>
           </div>
         </div>
       </div>
