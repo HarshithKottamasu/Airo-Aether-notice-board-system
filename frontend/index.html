@@ -282,17 +282,18 @@
   // ── LOAD ALL DATA ──────────────────────────────────────────────
   async function loadAll() {
     try {
-      const [noticeRes, eventRes] = await Promise.all([
+      const [noticeRes, eventRes, matchRes] = await Promise.all([
         fetchJSON(`${API}/announcements/active`),
-        fetchJSON(`${API}/events/current`)
+        fetchJSON(`${API}/events/current`),
+        fetchJSON(`${API}/matches/live`)   
       ]);
 
       allNotices = noticeRes.data || [];
-      allMatches = [];
+      allMatches = matchRes.data || [];  
       allThemes = [];
 
       document.getElementById("stat-notices").textContent = allNotices.length;
-      document.getElementById("stat-live").textContent = 0;
+      document.getElementById("stat-live").textContent = allMatches.length;
       document.getElementById("stat-events").textContent = eventRes.data ? 1 : 0;
       document.getElementById("stat-theme").textContent =
         eventRes.data?.theme?.toUpperCase() || "NONE";
@@ -324,13 +325,17 @@
 
   // ── NOTICES ────────────────────────────────────────────────────
   function setTab(tab) {
-    activeTab = tab;
-    document.querySelectorAll(".event-tab").forEach(el => el.classList.remove("active"));
-    const btns = document.querySelectorAll(".event-tab");
-    if (tab === "AIRO")   btns[0].classList.add("active");
-    if (tab === "AETHER") btns[1].classList.add("active");
-    if (tab === "ALL")    btns[2].classList.add("active");
-    renderNotices();
+  activeTab = tab;
+
+  document.querySelectorAll(".event-tab").forEach(el => el.classList.remove("active"));
+  const btns = document.querySelectorAll(".event-tab");
+
+  if (tab === "AIRO") btns[0].classList.add("active");
+  if (tab === "AETHER") btns[1].classList.add("active");
+  if (tab === "ALL") btns[2].classList.add("active");
+
+  renderNotices();
+  renderMatches();   
   }
 
   function renderNotices() {
@@ -368,26 +373,35 @@
 
   // ── MATCHES ────────────────────────────────────────────────────
   function renderMatches() {
-    document.getElementById("match-count").textContent = allMatches.length + " MATCHES";
 
-    if (allMatches.length === 0) {
-      document.getElementById("matches-list").innerHTML = `<div class="error-row">NO MATCHES SCHEDULED</div>`;
-      return;
-    }
+  // 🔥 FILTER BASED ON TAB
+  const filtered = allMatches.filter(m => {
+    if (activeTab === "ALL") return true;
+    return (m.event_type || "").toUpperCase() === activeTab;
+  });
 
-    document.getElementById("matches-list").innerHTML = allMatches.map(m => `
-      <div class="match-card">
-        <div class="match-sport">${m.sport || "SPORT"}</div>
-        <div class="match-teams">
-          <div class="team-name left">${m.team1}</div>
-          <div class="score-block">
-            <div class="score-text">${m.score || "TBD"}</div>
-            <span class="match-status ${(m.status||"upcoming").toLowerCase()}">${(m.status||"UPCOMING").toUpperCase()}</span>
-          </div>
-          <div class="team-name right">${m.team2}</div>
-        </div>
-      </div>`).join("");
+  document.getElementById("match-count").textContent = filtered.length + " MATCHES";
+
+  if (filtered.length === 0) {
+    document.getElementById("matches-list").innerHTML =
+      `<div class="error-row">NO MATCHES FOR THIS EVENT</div>`;
+    return;
   }
+
+  document.getElementById("matches-list").innerHTML = filtered.map(m => `
+    <div class="match-card">
+      <div class="match-sport">${m.sport || "SPORT"}</div>
+      <div class="match-teams">
+        <div class="team-name left">${m.team1}</div>
+        <div class="score-block">
+          <div class="score-text">${m.score}</div>
+          <span class="match-status ${m.status.toLowerCase()}">${m.status}</span>
+        </div>
+        <div class="team-name right">${m.team2}</div>
+      </div>
+    </div>
+  `).join("");
+}
 
   // ── THEMES ─────────────────────────────────────────────────────
   function renderThemes() {
@@ -453,9 +467,11 @@ async function loadEvent() {
 
     const event = result.data;
 
-    // 🔥 UPDATE UI HERE
-    document.getElementById("event-name").innerText = event.name;
-    document.getElementById("event-theme").innerText = event.theme;
+    const nameEl = document.getElementById("event-name");
+    const themeEl = document.getElementById("event-theme");
+
+    if (nameEl) nameEl.innerText = event.name;
+    if (themeEl) themeEl.innerText = event.theme;
 
   } catch (err) {
     console.error("Error loading event:", err);
