@@ -272,6 +272,24 @@
   let allThemes  = [];
   let activeTab  = "AIRO";
 
+  const TAB_CONTEXT = {
+  AIRO: {
+    showMatches: true,
+    showThemes: false,
+    category: "SPORT"
+  },
+  AETHER: {
+    showMatches: false,
+    showThemes: true,
+    category: "CULTURAL"
+  },
+  ALL: {
+    showMatches: true,
+    showThemes: true,
+    category: "ALL"
+  }
+};
+
   // ── FETCH HELPERS ──────────────────────────────────────────────
   async function fetchJSON(url) {
     const res = await fetch(url);
@@ -340,6 +358,8 @@
   function setTab(tab) {
   activeTab = tab;
 
+  const ctx = TAB_CONTEXT[tab];
+
   document.querySelectorAll(".event-tab").forEach(el => el.classList.remove("active"));
   const btns = document.querySelectorAll(".event-tab");
 
@@ -347,9 +367,7 @@
   if (tab === "AETHER") btns[1].classList.add("active");
   if (tab === "ALL") btns[2].classList.add("active");
 
-  renderNotices();
-  renderMatches();
-  renderThemes();   // 🔥 THIS MUST BE HERE
+  renderUI(ctx);   // 🔥 THIS is the key
 }
 
   function getCategoryFilter() {
@@ -390,8 +408,14 @@
     }).join("");
   }
 
+
+  function renderUI(ctx) {
+    renderMatches(ctx);
+    renderThemes(ctx);
+    renderNotices(ctx);
+  }
   // ── MATCHES ────────────────────────────────────────────────────
-  function renderMatches() {
+  function renderMatches(ctx) {
   const matchPanel = document.querySelector(".panel.orange");
 
     if (activeTab === "AETHER") {
@@ -442,7 +466,7 @@ matchPanel.style.display = "block";
   `).join("");
 }
   // ── THEMES ─────────────────────────────────────────────────────
-  function renderThemes() {
+  function renderThemes(ctx) {
     const themePanel = document.querySelector(".panel.green");
 
       // ❌ Hide ENTIRE panel for AIRO
